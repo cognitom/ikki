@@ -1,0 +1,46 @@
+<route>
+  <!--
+  # route tag
+  This is a part of ikki project
+  http://cognitom.github.io/ikki/
+  -->
+
+  <section if={ show }><yield /></section>
+
+  <script>
+    var self = this
+    self.show = false
+    self.param = {}
+
+    function match(route, actual) {
+      route = route.replace(/^\//, '')
+      if ('*' == route) return {}
+      var vs = []
+      var re = route.replace(/(^|\/):([^\/]+)/g, function(_, b, p) {
+        vs.push(p)
+        return b + '([^/]+)'
+      })
+      var ms = actual.match(new RegExp('^' + re + '$'))
+      if (!ms) return null
+
+      var param = {}
+      vs.map(function(v, i) { param[v] = ms[i+1] })
+      return param
+    }
+
+    self.on('update', function() {
+      var p
+      self.show = (!self.parent.found && (p = match(opts.path, self.parent.path)))
+      self.param = p || {}
+      if (self.show){
+        self.parent.found = true
+        // redirect
+        if (opts.redirect) {
+          if (/^http/.test(opts.redirect)) location.href = opts.redirect
+          else location.hash = opts.redirect
+        }
+      }
+    })
+  </script>
+
+</route>

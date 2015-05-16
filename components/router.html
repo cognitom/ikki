@@ -1,0 +1,45 @@
+<router>
+  <!--
+  # router tag
+  This is a part of ikki project
+  http://cognitom.github.io/ikki/
+  -->
+
+  <yield />
+
+  <script>
+    var self = this
+    var win = window
+    var evt = 'hashchange'
+    self.path = ''
+    self.query = {}
+    self.found = false
+
+    emit (e) {
+      var raw = location.href.split('#')[1] || ''
+      var path = raw.split('?')[0].replace(/^\/|\/$/g, '')
+      var query = {}
+      raw.replace(/[?&](.+?)=([^&]*)/g, function(_, k, v) { query[k] = v })
+
+      self.path = path
+      self.query = query
+      self.found = false
+      if (e) self.update()
+    }
+
+    self.on('mount', function() {
+      win.addEventListener
+        ? win.addEventListener(evt, self.emit, false)
+        : win.attachEvent('on' + evt, self.emit)
+    })
+
+    self.on('unmount', function() {
+      win.removeEventListener
+        ? win.removeEventListener(evt, self.emit, false)
+        : win.detachEvent('on' + evt, self.emit)
+    })
+
+    this.emit()
+  </script>
+
+</router>

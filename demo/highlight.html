@@ -1,0 +1,23 @@
+<highlight>
+
+  <yield/>
+
+  <script>
+    this.on('mount', function() {
+      hljs.highlightBlock(this.root)
+    })
+  </script>
+
+  <style scoped>
+    :scope {
+      display: block;
+      font-family: monospace;
+
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      padding: 1em 3em !important;
+      text-align: left;
+    }
+  </style>
+
+</highlight>

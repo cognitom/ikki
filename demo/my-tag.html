@@ -1,0 +1,35 @@
+<my-tag>
+
+  <p>{ opts.message || 'Well...' }</p>
+  <footer>{ opts.desc || 'Loading...' }</footer>
+
+  <script>
+    this.mixin('ikki')
+  </script>
+
+  <style scoped>
+    :scope {
+      display: block;
+      border: 1px solid #a7b5c1;
+      border-radius: .3em;
+      margin: 1em 3em;
+      background: #a7b5c1;
+      color: white;
+    }
+    p {
+      line-height: 1.2em;
+      margin: 0;
+      padding: .8em;
+      font-size: 150%;
+    }
+    footer {
+      font-size: 90%;
+      color: #a7b5c1;
+      padding: .8em;
+      background: #fff;
+      border-bottom-left-radius: .3em;
+      border-bottom-right-radius: .3em;
+    }
+  </style>
+
+</my-tag>
