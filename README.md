@@ -12,14 +12,16 @@ An extention toolkit for [Riot.js](https://muut.com/riotjs/).
 
 To use ikki, Riot v2.1.0 or above is needed.
 
-### 1) via script tag
+### 1) Install Riot and ikki
+
+Use script tag:
 
 ```html
 <script src="//cdn.jsdelivr.net/riot/2.0/riot.js"></script>
 <script src="dist/ikki.min.js"></script>
 ```
 
-### 2) via Browserify
+or, via Browserify:
 
 ```bash
 $ npm install --save ikki
@@ -28,6 +30,18 @@ $ npm install --save ikki
 ```javascript
 var riot = require('riot')
 require('ikki')
+```
+
+### 2) Introduce mixin to your tag
+
+```html
+<my-tag>
+  <p>{ opts.message || 'Well...' }</p>
+  <footer>{ opts.desc || 'Loading...' }</footer>
+  <script>
+    this.mixin('ikki') // THIS LINE IS NEEDED TO USE IKKI'S FEATURES
+  </script>
+</my-tag>
 ```
 
 ## Guide
