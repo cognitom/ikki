@@ -116,7 +116,7 @@ The easiest way to write the routing of your Riot applications. No need to write
 #### Queries and parameters
 
 routing | actual | queries | parameters | how to get
-:--- | :--- | :--- | :---
+:--- | :--- | :--- | :--- | :--
 `user/:id` | http://localhost/#user/111 | `{}` | `{ id: 'tom' }` | `$tom`
 `search` | http://localhost/#search?word=ikki | `{ word: 'ikki' }` | `{}` | `?word`
 
