@@ -568,6 +568,7 @@ function parseNamedElements(root, parent, childTags) {
 
   walk(root, function(dom) {
     if (dom.nodeType == 1) {
+      dom.isLoop = 0
       if(dom.parentNode && dom.parentNode.isLoop) dom.isLoop = 1
       if(dom.getAttribute('each')) dom.isLoop = 1
       // custom child tag
@@ -690,7 +691,7 @@ function Tag(impl, conf, innerHTML) {
 
   // create a unique id to this tag
   // it could be handy to use it also to improve the virtual dom rendering speed
-  this._id = ~~(new Date().getTime() * Math.random())
+  this._id = fastAbs(~~(new Date().getTime() * Math.random()))
 
   extend(this, { parent: parent, root: root, opts: opts, tags: {} }, item)
 
@@ -725,11 +726,11 @@ function Tag(impl, conf, innerHTML) {
       mix = 'string' == typeof mix ? riot.mixin(mix) : mix
       each(Object.keys(mix), function(key) {
         // bind methods to self
-        self[key] = 'function' == typeof mix[key] && 'init' != key
-                  ? mix[key].bind(self) : mix[key]
-        // init method will be called automatically
-        if (mix.init) mix.init.bind(self)()
+        if ('init' != key)
+          self[key] = 'function' == typeof mix[key] ? mix[key].bind(self) : mix[key]
       })
+      // init method will be called automatically
+      if (mix.init) mix.init.bind(self)()
     })
   }
 
@@ -759,8 +760,11 @@ function Tag(impl, conf, innerHTML) {
     }
 
     if (root.stub) self.root = root = parent.root
-    self.trigger('mount')
 
+    // if it's not a child tag we can trigger its mount event
+    if (!self.parent) self.trigger('mount')
+    // otherwise we need to wait that the parent event gets triggered
+    else self.parent.one('mount', function() { self.trigger('mount') })
   }
 
 
@@ -835,8 +839,10 @@ function setEventHandler(name, handler, dom, tag, item) {
       e.returnValue = false
     }
 
-    var el = item ? tag.parent : tag
-    el.update()
+    if (!e.preventUpdate) {
+      var el = item ? tag.parent : tag
+      el.update()
+    }
 
   }
 
@@ -935,6 +941,10 @@ function remAttr(dom, name) {
   dom.removeAttribute(name)
 }
 
+function fastAbs(nr) {
+  return (nr ^ (nr >> 31)) - (nr >> 31)
+}
+
 // max 2 from objects allowed
 function extend(obj, from, from2) {
   from && each(Object.keys(from), function(key) {
@@ -946,7 +956,7 @@ function extend(obj, from, from2) {
 function mkdom(template) {
   var tagName = template.trim().slice(1, 3).toLowerCase(),
       rootTag = /td|th/.test(tagName) ? 'tr' : tagName == 'tr' ? 'tbody' : 'div',
-      el = document.createElement(rootTag)
+      el = mkEl(rootTag)
 
   el.stub = true
 
@@ -972,6 +982,10 @@ function walk(dom, fn) {
       }
     }
   }
+}
+
+function mkEl(name) {
+  return document.createElement(name)
 }
 
 function replaceYield (tmpl, innerHTML) {
@@ -1022,15 +1036,23 @@ function checkIE() {
 }
 
 function tbodyInnerHTML(el, html, tagName) {
-  var div = document.createElement('div')
-  div.innerHTML = '<table>' + html + '</table>'
+  var div = mkEl('div'),
+      loops = /td|th/.test(tagName) ? 3 : 2,
+      child
 
-  el.appendChild(/td|th/.test(tagName) ? div.firstChild.firstChild.firstChild.firstChild : div.firstChild.firstChild.firstChild)
+  div.innerHTML = '<table>' + html + '</table>'
+  child = div.firstChild
+
+  while(loops--) {
+    child = child.firstChild
+  }
+
+  el.appendChild(child)
 
 }
 
 function optionInnerHTML(el, html) {
-  var opt = document.createElement('option'),
+  var opt = mkEl('option'),
       valRegx = /value=[\"'](.+?)[\"']/,
       selRegx = /selected=[\"'](.+?)[\"']/,
       valuesMatch = html.match(valRegx),
@@ -1065,7 +1087,7 @@ function getTag(dom) {
 
 function injectStyle(css) {
 
-  styleNode = styleNode || document.createElement('style')
+  styleNode = styleNode || mkEl('style')
 
   if (!document.head) return
 
