@@ -169,11 +169,7 @@ riot.mixin('ikki', {
         if (!prom.then) setAndGo(prom)
         else prom.then(setAndGo)
       }
-      process(route
-        ? opts(route.path, route.query, route.param)
-        : opts('', {}, {})
-      )
-
+      process(route ? opts(route) : opts())
     }
   },
 
