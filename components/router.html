@@ -24,6 +24,7 @@
       self.path = path
       self.query = query
       self.found = false
+
       if (e) self.update()
     }
 
@@ -39,7 +40,7 @@
         : win.detachEvent('on' + evt, self.emit)
     })
 
-    this.emit()
+    self.emit()
   </script>
 
 </router>
