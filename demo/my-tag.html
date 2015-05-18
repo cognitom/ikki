@@ -1,10 +1,14 @@
 <my-tag>
 
-  <p>{ opts.message || 'Well...' }</p>
+  <p onclick={ click }>{ opts.message || 'Well...' }</p>
   <footer>{ opts.desc || 'Loading...' }</footer>
 
   <script>
     this.mixin('ikki')
+
+    click(e) {
+      this.trigger('click', e)
+    }
   </script>
 
   <style scoped>

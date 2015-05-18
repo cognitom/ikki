@@ -10,7 +10,6 @@
   <script>
     var self = this
     self.show = false
-    self.param = {}
 
     function match(route, actual) {
       route = route.replace(/^\//, '')
@@ -29,16 +28,23 @@
     }
 
     self.on('update', function() {
-      var p
-      self.show = (!self.parent.found && (p = match(opts.path, self.parent.path)))
-      self.param = p || {}
-      if (self.show){
-        self.parent.found = true
+      var path = self.parent.path
+      var query = self.parent.query
+      var param
+      self.show = !self.parent.found &&
+                  (param = match(opts.path, path)) !== null
+      param = param || {}
+
+      if (!self.show) return
+
+      if (opts.redirect) {
         // redirect
-        if (opts.redirect) {
-          if (/^http/.test(opts.redirect)) location.href = opts.redirect
-          else location.hash = opts.redirect
-        }
+        if (/^http/.test(opts.redirect)) location.href = opts.redirect
+        else location.hash = opts.redirect
+      } else {
+        // tell descendants
+        self.trigger('urlchanged', { path: path, query: query, param: param})
+        self.parent.found = true
       }
     })
   </script>

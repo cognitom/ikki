@@ -7,7 +7,7 @@
 
   <section class="billboard">
     <h2>deadly simple &amp; html-centric</h2>
-    <p>ikki is an extention toolkit for <a href="https://muut.com/riotjs/">Riot.js</a></p>
+    <p>The extention toolkit for <a href="https://muut.com/riotjs/">Riot.js</a></p>
     <img src="demo/one-way.png">
     <img src="demo/routing.png">
   </section>
@@ -25,9 +25,9 @@
   <p>Then, see the ikki's way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p>
 
   <highlight>
-    &lt;my-tag opts=&#123; object &#125; /&gt;<br>
+    &lt;my-tag opts=\{ object } /&gt;<br>
     &lt;script&gt;<br>
-    &nbsp;&nbsp;this.object = { message: 'Hi!' }<br>
+    &nbsp;&nbsp;this.object = \{ message: 'Hi!' }<br>
     &lt;/script&gt;
   </highlight>
 
@@ -38,11 +38,11 @@
   <p>We can give a promise to the tag. It'll make really easy to do any async process.</p>
 
   <highlight>
-    &lt;my-tag opts=&#123; promise &#125; /&gt;<br>
+    &lt;my-tag opts=\{ promise } /&gt;<br>
     &lt;script&gt;<br>
-    &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve({ message: 'Hello!' })<br>
+    &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: 'Hello!' })<br>
     &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br>
     &nbsp;&nbsp;})<br>
     &lt;/script&gt;
@@ -55,12 +55,12 @@
   <p>The third stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
 
   <highlight>
-    &lt;my-tag opts=&#123; generator &#125; /&gt;<br>
+    &lt;my-tag opts=\{ generator } /&gt;<br>
     &lt;script&gt;<br>
-    &nbsp;&nbsp;this.generator = function*() { while (true) {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve({ message: hello())<br>
+    &nbsp;&nbsp;this.generator = function*() \{ while (true) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: hello())<br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br>
     &nbsp;&nbsp;&nbsp;&nbsp;})<br>
     &nbsp;&nbsp;}}<br>
@@ -88,10 +88,8 @@
 
   <navi>
     <ul>
-      <li><a href="#">#</a></li>
       <li><a href="#lorem">#lorem</a></li>
       <li><a href="#member/Tom">#member/Tom</a></li>
-      <li><a href="#member/Yayoi">#member/Yayoi</a></li>
       <li><a href="#merol">#merol</a></li>
       <li><a href="#not/found">#not/found</a></li>
     </ul>
@@ -107,7 +105,48 @@
 
   <h2>controllers, kind of</h2>
 
-  <p>coming soon.</p>
+  <h3>1. introduce event listeners</h3>
+
+  <p>Yield an array of listeners like this:</p>
+
+  <highlight>
+    var evts = [\{<br>
+    &nbsp;&nbsp;key: 'click',<br>
+    &nbsp;&nbsp;callback: function (e) \{ /* do something cool */ }<br>
+    }]<br>
+    yield \{ listeners: evts }
+  </highlight>
+
+  <p>If you're familier with deferred concept, you can resolve the promise inside the listener.</p>
+
+  <highlight>
+    var deferred = new Deferred()<br>
+    var evts = [\{<br>
+    &nbsp;&nbsp;key: 'click',<br>
+    &nbsp;&nbsp;callback: function (e) \{ deferred.resolve(\{ message: hello() }) }<br>
+    }]<br>
+    yield \{ listeners: evts }<br>
+    yield deferred.promise
+  </highlight>
+
+  <my-tag opts={ gen2 } />
+
+  <h3>2. combinations</h3>
+
+  <p>OK, we have generators and routers. Then, combine them.</p>
+
+  <navi>
+    <ul>
+      <li><a href="#member/Tom">#member/Tom</a></li>
+      <li><a href="#member/Yayoi">#member/Yayoi</a></li>
+      <li><a href="#member/John">#member/John</a></li>
+    </ul>
+  </navi>
+
+  <router>
+    <route path="member/:person"><my-tag opts={ parent.parent.gen3 } /></route>
+    <route path="*"><my-tag message="not found." desc="Click the links above." /></route>
+  </router>
 
   <footer>
     <p><a href="https://github.com/cognitom/ikki">GitHub</a></p>
@@ -125,19 +164,73 @@
     })
 
     // generator
-    var n = 0
-    this.gen = function*() { while (true) {
-      yield new Promise(function(resolve, reject) {
-        setTimeout(function() {
-          resolve({ message: pick(HELLO_I18N), desc: 'Generator is awesome!' })
-        }, 1000)
-      })
-    }}
+    this.gen = function*() {
+      var hello = pick(HELLO_I18N)
+      while (true) {
+        yield new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            resolve({ message: hello(), desc: 'Generator is awesome!' })
+          }, 1000)
+        })
+      }
+    }
+
+    // event listeners
+    this.gen2 = function*() {
+      var hello = pick(HELLO_I18N)
+      var resolve = null
+      var deferred = new Deferred()
+
+      function pack() { return {
+        message: hello(),
+        desc: 'Click to change the word.'
+      }}
+
+      var evt = {
+        key: 'click',
+        callback: function(e) {
+          deferred.resolve(pack())
+          deferred = new Deferred()
+        }
+      }
+
+      yield { listeners: [evt] } // listen the event
+      yield pack() // quickly yield at first
+      while (true) yield deferred.promise
+    }
+
+    // generator with router
+    this.gen3 = function*(route) {
+      var name = 'world'
+      var hello = pick(HELLO_I18N)
+
+      if (route && route.param) name = route.param.person || name
+
+      function pack() { return {
+        message: hello() + ' ' + name + '!',
+        desc: 'You can pass the routing info to the generator.'
+      }}
+
+      yield pack() // quickly yield at first
+      while (true) {
+        yield new Promise(function(resolve, reject) {
+          setTimeout(function() { resolve(pack()) }, 1000)
+        })
+      }
+    }
 
     var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
-    var pick = function() { var n = -1; return function(arr){
+    var pick = function(arr) { var n = -1; return function(){
       return arr[n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length]
-    }}()
+    }}
+    function Deferred() {
+      this.promise = new Promise(function(resolve, reject) {
+        this._resolve = resolve
+        this._reject = reject
+      }.bind(this))
+    }
+    Deferred.prototype.resolve = function(value) { this._resolve(value) }
+    Deferred.prototype.reject = function(reason) { this._reject(reason) }
   </script>
 
   <style scoped>
