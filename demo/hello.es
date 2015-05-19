@@ -10,7 +10,7 @@ class Hello extends Oshio {
 
     let pack  = (str) => { return {
       message: hello() + ' ' + str + '!',
-      desc: 'Hmmmmm.'
+      desc: 'Click to change the word.'
     }}
 
     this.on('click', () => { this.push(pack(name)) })
