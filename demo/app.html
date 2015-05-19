@@ -148,11 +148,18 @@
     <route path="*"><my-tag message="not found." desc="Click the links above." /></route>
   </router>
 
+  <router>
+    <route path="member/:person"><my-tag opts={ parent.parent.gen4 } /></route>
+    <route path="*"><my-tag message="not found." desc="Click the links above." /></route>
+  </router>
+
   <footer>
     <p><a href="https://github.com/cognitom/ikki">GitHub</a></p>
   </footer>
 
   <script>
+    var Hello = require('./hello.es')
+
     // just object
     this.obj = { message: 'Hi!', desc: 'This is just an object.' }
 
@@ -219,6 +226,8 @@
       }
     }
 
+    this.gen4 = new Hello().start()
+
     var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
     var pick = function(arr) { var n = -1; return function(){
       return arr[n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length]
@@ -231,6 +240,7 @@
     }
     Deferred.prototype.resolve = function(value) { this._resolve(value) }
     Deferred.prototype.reject = function(reason) { this._reject(reason) }
+
   </script>
 
   <style scoped>
