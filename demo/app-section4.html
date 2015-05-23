@@ -1,0 +1,68 @@
+<app-section4>
+
+  <h2>Generator helpers</h3>
+
+  <p>ikki has several built-in helpers. (named after Japanese historical cities)</p>
+
+  <h3>1. Kyoto</h3>
+
+  <p><code>Kyoto</code> takes event-driven approach. And you don't have to care about the generator which is relatively new in JavaScript.</p>
+
+  <highlight>
+    var kyoto = require('ikki/lib/kyoto.es')<br>
+    var HELLO = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']<br>
+    <br>
+    this.hello = kyoto(function(push, path, query, param) {<br>
+    &nbsp;&nbsp;push(\{ message: 'Click me!', btns: ['Next'] })<br>
+    }, {<br>
+    &nbsp;&nbsp;'click': (push, data) => \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;push(\{ message: HELLO[n = ++n % HELLO.length] + '!' })<br>
+    &nbsp;&nbsp;}<br>
+    })
+  </highlight>
+
+  <my-dialog opts={ hello } />
+
+  <h3>2. Edo</h3>
+
+  <p>On the other hand, <code>edo</code> is the generator based flow-controler. If you need serial/branching interactions with user's input, this will be a perfect solution.</p>
+
+  <highlight>
+    var edo = require('ikki/lib/edo.es')<br>
+    <br>
+    this.dialog = edo('click', function* direction(path, query, param) \{<br>
+    &nbsp;&nbsp;yield \{ message: 'Good morning!', btns: ['Hi'] }<br>
+    &nbsp;&nbsp;let fruit = yield \{ message: 'Which do you like?', btns: ['apple', 'banana'] }<br>
+    &nbsp;&nbsp;yield \{ message: "OK, I'll give you this " + fruit + '.', btns: ['Thanks'] }<br>
+    &nbsp;&nbsp;yield \{ message: 'See you!', btns: ['Bye'] }<br>
+    })
+  </highlight>
+
+  <my-dialog opts={ dialog } />
+
+  <script>
+    var edo = require('../lib/edo.es')
+    var kyoto = require('../lib/kyoto.es')
+    var HELLO = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
+
+    var n = -1
+    this.hello = kyoto(function(push, path, query, param) {
+      push({ message: 'Click me!', btns: ['Next'] })
+    }, {
+      'click': (push, data) => {
+        push({ message: HELLO[n = ++n % HELLO.length] + '!' })
+      }
+    })
+
+    this.dialog = edo('click', function* direction(path, query, param) {
+      while (true) {
+        yield { message: 'Good morning!', btns: ['Hi'] }
+        let fruit = yield { message: 'Which do you like?', btns: ['apple', 'banana'] }
+        yield { message: "OK, I'll give you this " + fruit + '.', btns: ['Thanks'] }
+        yield { message: 'See you!', btns: ['Bye'] }
+      }
+    })
+
+  </script>
+
+</app-section4>

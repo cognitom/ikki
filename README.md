@@ -134,6 +134,44 @@ routing | actual | queries | parameters | how to get
 `user/:id` | http://localhost/#user/111 | `{}` | `{ id: 'tom' }` | `$tom`
 `search` | http://localhost/#search?word=ikki | `{ word: 'ikki' }` | `{}` | `?word`
 
+### Generator helpers
+
+ikki has several built-in helpers to create generators.
+
+#### 1) Edo
+
+The `edo` is the generator based flow-controler. This method creates a new generator which can be passed to the components. If you need serial/branching interactions with user's input, this will be a perfect solution.
+
+
+##### Syntax
+
+```javascript
+edo(listeners, generator)
+```
+
+- `listeners`: space-sparated listeners' name in `String`
+- `generator`: routing information is passed via arguments: `path`, `query`, `param`. See details on "HTML router" section. With `yield` you can push the data to the component.
+
+##### Examples
+
+This is a simple conversation-like example. `yield` returns the value given by the triggered event. Of cause, you can use `if`, `while`, ...etc as you like.
+
+```html
+<app>
+  <my-dialog opts={ gen } />
+  <script>
+    var edo = require('ikki/lib/edo')
+    this.gen = edo('click', function*(path, query, param) {
+      yield { message: 'Good morning!', btns: ['Next'] }
+      let fruit = yield { message: 'Which do you like?', btns: ['apple', 'banana'] }
+      yield { message: "OK, I'll give you this " + fruit + '.', btns: ['Thanks'] }
+      yield { message: 'See you!', btns: [] }
+    })
+  </script>
+</app>
+```
+
+
 
 ## License
 

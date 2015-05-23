@@ -1,7 +1,7 @@
 {
   "name": "ikki",
-  "version": "0.1.0",
-  "description": "An extention toolkit for Riot.js",
+  "version": "0.2.0",
+  "description": "The extention toolkit for Riot.js",
   "homepage": "https://github.com/cognitom/ikki",
   "repository": {
     "type": "git",
@@ -16,21 +16,30 @@
     "component"
   ],
   "devDependencies": {
+    "babelify": "^6.1.1",
     "browser-sync": "^1.9.0",
+    "browserify": "^10.2.0",
     "coffee-script": "^1.9.2",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-concat": "^2.5.2",
+    "gulp-header": "^1.2.2",
     "gulp-regenerator": "^3.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-riot": "^0.2.14",
     "gulp-shell": "^0.4.1",
     "gulp-uglify": "^1.2.0",
     "gulp-wrap": "^0.11.0",
-    "riot": "muut/riotjs#dev",
+    "merge-stream": "^0.1.7",
+    "regenerator": "^0.8.26",
+    "riot": "^2.1.0",
+    "riotify": "0.0.9",
     "run-sequence": "^1.1.0",
     "smash": "0.0.14",
-    "streamqueue": "^0.1.3"
+    "streamqueue": "^0.1.3",
+    "through2": "^0.6.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "main": "dist/ikki.js",
   "scripts": {
