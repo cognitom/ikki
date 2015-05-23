@@ -1,9 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var regeneratorRuntime = require('regenerator/runtime');riot.tag('app', '<header> <h1>ikki</h1> <p>ikki is not flux</p> </header> <section class="billboard"> <h2>deadly simple &amp; html-centric</h2> <p>The extention toolkit for <a href="https://muut.com/riotjs/">Riot.js</a></p> <img src="demo/one-way.png"> <img src="demo/routing.png"> </section> <h2>pass a promise/generator, just like an object</h2> <h3>1. object</h3> <p>At the first, see the traditional way to give the value.</p> <highlight> &lt;my-tag message="Hi!" /&gt;<br> </highlight> <p>Then, see the ikki\'s way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p> <highlight> &lt;my-tag opts=\\{ object } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.object = \\{ message: \'Hi!\' }<br> &lt;/script&gt; </highlight> <my-tag opts="{ obj }"></my-tag> <h3>2. promise</h3> <p>We can give a promise to the tag. It\'ll make really easy to do any async process.</p> <highlight> &lt;my-tag opts=\\{ promise } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: \'Hello!\' })<br> &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br> &nbsp;&nbsp;})<br> &lt;/script&gt; </highlight> <my-tag opts="{ prom }"></my-tag> <h3>3. generator</h3> <p>The third stuff is the generator. Think it as serial promises.<br>That\'s awesome!</p> <highlight> &lt;my-tag opts=\\{ generator } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.generator = function*() \\{ while (true) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: hello())<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br> &nbsp;&nbsp;&nbsp;&nbsp;})<br> &nbsp;&nbsp;}}<br> &lt;/script&gt; </highlight> <my-tag opts="{ gen }"></my-tag> <h2>routings in html</h2> <p>The routing is needed to be more frexible.<br> Nowaday, routing with the entire page is impractical.<br> You may wanna change just the part of HTML instead of the entire page.<br> Here is what we wanted to do.</p> <highlight> &lt;router&gt;<br> &nbsp;&nbsp;&lt;route path="/"&gt;&lt;my-tag message="hello world" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="lorem"&gt;&lt;my-tag message="Lorem Ipsum is..." /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="member/:person"&gt;&lt;my-tag message="$person" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="merol" redirect="lorem" /&gt;<br> &nbsp;&nbsp;&lt;route path="*"&gt;&lt;my-tag message="not found." /&gt;&lt;/route&gt;<br> &lt;/router&gt;<br> </highlight> <navi> <ul> <li><a href="#lorem">#lorem</a></li> <li><a href="#member/Tom">#member/Tom</a></li> <li><a href="#merol">#merol</a></li> <li><a href="#not/found">#not/found</a></li> </ul> </navi> <router> <route path="/"><my-tag message="hello world" desc="slash(/) matchs url without hash"></my-tag></route> <route path="lorem"><my-tag message="Lorem Ipsum is simply dummy text of the printing and typesetting industry." desc="\'lorem\' matchs exact \'lorem\'"></my-tag></route> <route path="member/:person"><my-tag message="$person" desc="\'member/:person\' matchs anything starting with \'member/\'"></my-tag></route> <route path="merol" redirect="lorem"></route> <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url"></my-tag></route> </router> <h2>controllers, kind of</h2> <h3>1. introduce event listeners</h3> <p>Yield an array of listeners like this:</p> <highlight> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ /* do something cool */ }<br> }]<br> yield \\{ listeners: evts } </highlight> <p>If you\'re familier with deferred concept, you can resolve the promise inside the listener.</p> <highlight> var deferred = new Deferred()<br> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ deferred.resolve(\\{ message: hello() }) }<br> }]<br> yield \\{ listeners: evts }<br> yield deferred.promise </highlight> <my-tag opts="{ gen2 }"></my-tag> <h3>2. combinations</h3> <p>OK, we have generators and routers. Then, combine them.</p> <navi> <ul> <li><a href="#member/Tom">#member/Tom</a></li> <li><a href="#member/Yayoi">#member/Yayoi</a></li> <li><a href="#member/John">#member/John</a></li> </ul> </navi> <router> <route path="member/:person"><my-tag opts="{ parent.parent.gen3 }"></my-tag></route> <route path="*"><my-tag message="not found." desc="Click the links above."></my-tag></route> </router> <h3>3. making controllers</h3> <p>Another example is <a href="https://github.com/cognitom/ikki/blob/dev/demo/hello.es">here</a>.</p> <router> <route path="member/:person"><my-tag opts="{ parent.parent.gen4 }"></my-tag></route> <route path="*"><my-tag message="not found." desc="Click the links above."></my-tag></route> </router> <footer> <p><a href="https://github.com/cognitom/ikki">GitHub</a></p> </footer>', 'app , [riot-tag="app"] { display: block; text-align: center; } app > header , [riot-tag="app"] > header { padding: 8em 0; background: #8A97A1; color: white; text-shadow: 0 0 2px rgba(0,0,0,.5); } app > header h1 , [riot-tag="app"] > header h1 { margin: 0; font-size: 340%; } app > header p , [riot-tag="app"] > header p { margin: 0; } app > p , [riot-tag="app"] > p { line-height: 1.4em; padding: 0 .5em; } app > h2 , [riot-tag="app"] > h2 { margin: 3em 0 .5em; color: #8A97A1; } app > h3 , [riot-tag="app"] > h3 { margin: 3em 0 .5em; } app > footer , [riot-tag="app"] > footer { border-top: 1px solid #ccc; margin: 3em 0 0; padding: 2em 0; background: #f7f7f7; } app > navi , [riot-tag="app"] > navi { } app > navi ul , [riot-tag="app"] > navi ul { list-style: none; padding: .5em; } app > navi li , [riot-tag="app"] > navi li { display: inline-block; } app > navi li:after , [riot-tag="app"] > navi li:after { content: "-"; margin: 0 1em; } app > navi li:last-child:after , [riot-tag="app"] > navi li:last-child:after { content: none; } app > navi a , [riot-tag="app"] > navi a { } app a , [riot-tag="app"] a { color: #2887D7; text-decoration: none; } app .billboard , [riot-tag="app"] .billboard { background: #ffd700; color: #8A97A1; padding: 2em; } app .billboard a , [riot-tag="app"] .billboard a { color: inherit; font-weight: bold; }', function (opts) {
-  var Hello = require('./hello.es');
-
+var regeneratorRuntime = require('regenerator/runtime');riot.tag('app-section1', '<h2>pass a promise/generator, just like an object</h2> <h3>1. object</h3> <p>At the first, see the traditional way to give the value.</p> <highlight> &lt;my-tag message="Hi!" /&gt;<br> </highlight> <p>Then, see the ikki\'s way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p> <highlight> &lt;my-tag opts=\\{ object } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.object = \\{ message: \'Hi!\' }<br> &lt;/script&gt; </highlight> <my-tag opts="{ obj }"></my-tag> <h3>2. promise</h3> <p>We can give a promise to the tag. It\'ll make really easy to do any async process.</p> <highlight> &lt;my-tag opts=\\{ promise } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: \'Hello!\' })<br> &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br> &nbsp;&nbsp;})<br> &lt;/script&gt; </highlight> <my-tag opts="{ prom }"></my-tag> <h3>3. generator</h3> <p>The third stuff is the generator. Think it as serial promises.<br>That\'s awesome!</p> <highlight> &lt;my-tag opts=\\{ generator } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.generator = function*() \\{ while (true) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: hello())<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br> &nbsp;&nbsp;&nbsp;&nbsp;})<br> &nbsp;&nbsp;}}<br> &lt;/script&gt; </highlight> <my-tag opts="{ gen }"></my-tag>', function (opts) {
   this.obj = { message: 'Hi!', desc: 'This is just an object.' };
 
   this.prom = new Promise(function (resolve, reject) {
@@ -43,101 +41,6 @@ var regeneratorRuntime = require('regenerator/runtime');riot.tag('app', '<header
     }, callee$1$0, this);
   });
 
-  this.gen2 = regeneratorRuntime.mark(function callee$1$0() {
-    var hello, resolve, deferred, pack, evt;
-    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
-      while (1) switch (context$2$0.prev = context$2$0.next) {
-        case 0:
-          pack = function pack() {
-            return {
-              message: hello(),
-              desc: 'Click to change the word.'
-            };
-          };
-
-          hello = pick(HELLO_I18N);
-          resolve = null;
-          deferred = new Deferred();
-          evt = {
-            key: 'click',
-            callback: function callback(e) {
-              deferred.resolve(pack());
-              deferred = new Deferred();
-            }
-          };
-          context$2$0.next = 7;
-          return { listeners: [evt] };
-
-        case 7:
-          context$2$0.next = 9;
-          return pack();
-
-        case 9:
-          if (!true) {
-            context$2$0.next = 14;
-            break;
-          }
-
-          context$2$0.next = 12;
-          return deferred.promise;
-
-        case 12:
-          context$2$0.next = 9;
-          break;
-
-        case 14:
-        case 'end':
-          return context$2$0.stop();
-      }
-    }, callee$1$0, this);
-  });
-
-  this.gen3 = regeneratorRuntime.mark(function callee$1$0(route) {
-    var name, hello, pack;
-    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
-      while (1) switch (context$2$0.prev = context$2$0.next) {
-        case 0:
-          pack = function pack() {
-            return {
-              message: hello() + ' ' + name + '!',
-              desc: 'You can pass the routing info to the generator.'
-            };
-          };
-
-          name = 'world';
-          hello = pick(HELLO_I18N);
-
-          if (route && route.param) name = route.param.person || name;
-
-          context$2$0.next = 6;
-          return pack();
-
-        case 6:
-          if (!true) {
-            context$2$0.next = 11;
-            break;
-          }
-
-          context$2$0.next = 9;
-          return new Promise(function (resolve, reject) {
-            setTimeout(function () {
-              resolve(pack());
-            }, 1000);
-          });
-
-        case 9:
-          context$2$0.next = 6;
-          break;
-
-        case 11:
-        case 'end':
-          return context$2$0.stop();
-      }
-    }, callee$1$0, this);
-  });
-
-  this.gen4 = new Hello().start();
-
   var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo'];
   var pick = function pick(arr) {
     var n = -1;return function () {
@@ -158,10 +61,166 @@ var regeneratorRuntime = require('regenerator/runtime');riot.tag('app', '<header
   };
 });
 
+riot.tag('app-section2', '<h2>routings in html</h2> <p>The routing is needed to be more frexible.<br> Nowaday, routing with the entire page is impractical.<br> You may wanna change just the part of HTML instead of the entire page.<br> Here is what we wanted to do.</p> <highlight> &lt;router&gt;<br> &nbsp;&nbsp;&lt;route path="/"&gt;&lt;my-tag message="hello world" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="lorem"&gt;&lt;my-tag message="Lorem Ipsum is..." /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="member/:person"&gt;&lt;my-tag message="$person" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="merol" redirect="lorem" /&gt;<br> &nbsp;&nbsp;&lt;route path="*"&gt;&lt;my-tag message="not found." /&gt;&lt;/route&gt;<br> &lt;/router&gt;<br> </highlight> <navi> <ul> <li><a href="#lorem">#lorem</a></li> <li><a href="#member/Tom">#member/Tom</a></li> <li><a href="#merol">#merol</a></li> <li><a href="#not/found">#not/found</a></li> </ul> </navi> <router> <route path="/"><my-tag message="hello world" desc="slash(/) matchs url without hash"></my-tag></route> <route path="lorem"><my-tag message="Lorem Ipsum is simply dummy text of the printing and typesetting industry." desc="\'lorem\' matchs exact \'lorem\'"></my-tag></route> <route path="member/:person"><my-tag message="$person" desc="\'member/:person\' matchs anything starting with \'member/\'"></my-tag></route> <route path="merol" redirect="lorem"></route> <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url"></my-tag></route> </router>', function (opts) {});
+
+riot.tag('app-section3', '<h2>controllers, kind of</h2> <h3>1. introduce event listeners</h3> <p>Yield an array of listeners like this:</p> <highlight> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ /* do something cool */ }<br> }]<br> yield \\{ listeners: evts } </highlight> <p>If you\'re familier with deferred concept, you can resolve the promise inside the listener.</p> <highlight> var deferred = new Deferred()<br> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ deferred.resolve(\\{ message: hello() }) }<br> }]<br> yield \\{ listeners: evts }<br> yield deferred.promise </highlight> <my-dialog opts="{ gen2 }"></my-dialog> <h3>2. combinations</h3> <p>OK, we have generators and routers. Then, combine them.</p> <navi> <ol> <li> <a href="#hour/10">#hour/10</a> <span each="{ msg, i in greeting.morning }">{ msg }</span> </li> <li> <a href="#hour/14">#hour/14</a> <span each="{ msg, i in greeting.hello }">{ msg }</span> </li> <li> <a href="#hour/18">#hour/18</a> <span each="{ msg, i in greeting.evening }">{ msg }</span> </li> </ol> </navi> <router> <route path="hour/:hour"><my-tag opts="{ parent.parent.gen3 }"></my-tag></route> <route path="*"><my-tag message="Click the links above." desc="..."></my-tag></route> </router>', 'app-section3 navi ol , [riot-tag="app-section3"] navi ol { border: 1px solid #a7b5c1; border-radius: .3em; margin: 1em 3em; padding: 0; color: #a7b5c1; } app-section3 navi ol li , [riot-tag="app-section3"] navi ol li { display: block; border-top: 1px solid #a7b5c1; padding: .2em 0 .2em 1em; text-align: left; overflow: hidden; white-space: nowrap; } app-section3 navi ol li:first-child , [riot-tag="app-section3"] navi ol li:first-child { border-top: none; } app-section3 navi ol li a , [riot-tag="app-section3"] navi ol li a { margin-right: .2em; padding-right: .4em; border-right: 1px dotted #a7b5c1; } app-section3 navi ol li span , [riot-tag="app-section3"] navi ol li span { background-color: #a7b5c1; color: white; border-radius: .3em; padding: .1em .3em; margin: 0 .1em; font-size: 80%; }', function (opts) {
+  var Deferred = require('../lib/deferred.es');
+  var GREETING = {
+    morning: ['Good morning', 'おはよう', '早上好', 'Bonjour', 'Buon giorno'],
+    hello: ['Hello', 'こんにちは', '你好', 'Salut', 'Ciao'],
+    evening: ['Good evening', 'こんばんは', '晩上好', 'Bonsoir', 'Buona sera']
+  };
+
+  this.greeting = GREETING;
+
+  this.gen2 = regeneratorRuntime.mark(function callee$1$0() {
+    var deferred, n, evt;
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new Deferred();
+          n = 0;
+          evt = {
+            key: 'click',
+            callback: function callback(e) {
+              deferred.resolve({ message: GREETING.hello[n] });
+              deferred = new Deferred();
+              n = (n + 1) % GREETING.hello.length;
+            }
+          };
+          context$2$0.next = 5;
+          return { listeners: [evt] };
+
+        case 5:
+          context$2$0.next = 7;
+          return { message: 'Click me!', btns: ['Next'] };
+
+        case 7:
+          if (!true) {
+            context$2$0.next = 12;
+            break;
+          }
+
+          context$2$0.next = 10;
+          return deferred.promise;
+
+        case 10:
+          context$2$0.next = 7;
+          break;
+
+        case 12:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+
+  this.gen3 = regeneratorRuntime.mark(function callee$1$0(route) {
+    var hour, w, n;
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          hour = route && route.param ? (route.param.hour || 12) % 24 : 12;
+          w = hour < 12 ? 'morning' : hour < 17 ? 'hello' : 'evening';
+          n = 0;
+          context$2$0.next = 5;
+          return { message: 'It\'s ' + hour + ' o\'clock.' };
+
+        case 5:
+          if (!true) {
+            context$2$0.next = 10;
+            break;
+          }
+
+          context$2$0.next = 8;
+          return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+              resolve({
+                message: GREETING[w][n],
+                desc: 'You can pass the routing info to the generator.'
+              });
+              n = (n + 1) % GREETING[w].length;
+            }, 1500);
+          });
+
+        case 8:
+          context$2$0.next = 5;
+          break;
+
+        case 10:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+});
+
+riot.tag('app-section4', '<h2>Generator helpers</h3> <p>ikki has several built-in helpers. (named after Japanese historical cities\b)</p> <h3>1. Kyoto</h3> <p><code>Kyoto</code> takes event-driven approach. And you don\'t have to care about the generator which is relatively new in JavaScript.</p> <highlight> var kyoto = require(\'ikki/lib/kyoto.es\')<br> var HELLO = [\'Hello\', \'こんにちは\', \'你好\', \'Salut\', \'Hallo\']<br> <br> this.hello = kyoto(function(push, path, query, param) {<br> &nbsp;&nbsp;push(\\{ message: \'Click me!\', btns: [\'Next\'] })<br> }, {<br> &nbsp;&nbsp;\'click\': (push, data) => \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;push(\\{ message: HELLO[n = ++n % HELLO.length] + \'!\' })<br> &nbsp;&nbsp;}<br> }) </highlight> <my-dialog opts="{ hello }"></my-dialog> <h3>2. Edo</h3> <p>On the other hand, <code>edo</code> is the generator based flow-controler. If you need serial/branching interactions with user\'s input, this will be a perfect solution.</p> <highlight> var edo = require(\'ikki/lib/edo.es\')<br> <br> this.dialog = edo(\'click\', function* direction(path, query, param) \\{<br> &nbsp;&nbsp;yield \\{ message: \'Good morning!\', btns: [\'Hi\'] }<br> &nbsp;&nbsp;let fruit = yield \\{ message: \'Which do you like?\', btns: [\'apple\', \'banana\'] }<br> &nbsp;&nbsp;yield \\{ message: "OK, I\'ll give you this " + fruit + \'.\', btns: [\'Thanks\'] }<br> &nbsp;&nbsp;yield \\{ message: \'See you!\', btns: [\'Bye\'] }<br> }) </highlight> <my-dialog opts="{ dialog }"></my-dialog>', function (opts) {
+  var edo = require('../lib/edo.es');
+  var kyoto = require('../lib/kyoto.es');
+  var HELLO = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo'];
+
+  var n = -1;
+  this.hello = kyoto(function (push, path, query, param) {
+    push({ message: 'Click me!', btns: ['Next'] });
+  }, {
+    'click': function click(push, data) {
+      push({ message: HELLO[n = ++n % HELLO.length] + '!' });
+    }
+  });
+
+  this.dialog = edo('click', regeneratorRuntime.mark(function direction(path, query, param) {
+    var fruit;
+    return regeneratorRuntime.wrap(function direction$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          if (!true) {
+            context$2$0.next = 12;
+            break;
+          }
+
+          context$2$0.next = 3;
+          return { message: 'Good morning!', btns: ['Hi'] };
+
+        case 3:
+          context$2$0.next = 5;
+          return { message: 'Which do you like?', btns: ['apple', 'banana'] };
+
+        case 5:
+          fruit = context$2$0.sent;
+          context$2$0.next = 8;
+          return { message: 'OK, I\'ll give you this ' + fruit + '.', btns: ['Thanks'] };
+
+        case 8:
+          context$2$0.next = 10;
+          return { message: 'See you!', btns: ['Bye'] };
+
+        case 10:
+          context$2$0.next = 0;
+          break;
+
+        case 12:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, direction, this);
+  }));
+});
+
+riot.tag('app', '<header> <h1>ikki</h1> <p>ikki is not flux</p> </header> <section class="billboard"> <h2>deadly simple &amp; html-centric</h2> <p>The extention toolkit for <a href="https://muut.com/riotjs/">Riot.js</a></p> <img src="demo/one-way.png"> <img src="demo/routing.png"> </section> <section riot-tag="app-section1"></section> <section riot-tag="app-section2"></section> <section riot-tag="app-section3"></section> <section riot-tag="app-section4"></section> <footer> <p><a href="https://github.com/cognitom/ikki">GitHub</a></p> </footer>', 'app , [riot-tag="app"] { display: block; text-align: center; } app > header , [riot-tag="app"] > header { padding: 8em 0; background: #8A97A1; color: white; text-shadow: 0 0 2px rgba(0,0,0,.5); } app > header h1 , [riot-tag="app"] > header h1 { margin: 0; font-size: 340%; } app > header p , [riot-tag="app"] > header p { margin: 0; } app section > p , [riot-tag="app"] section > p { line-height: 1.4em; padding: 0 .5em; } app section > h2 , [riot-tag="app"] section > h2 { margin: 3em 0 .5em; color: #8A97A1; } app section > h3 , [riot-tag="app"] section > h3 { margin: 3em 0 .5em; } app > footer , [riot-tag="app"] > footer { border-top: 1px solid #ccc; margin: 3em 0 0; padding: 2em 0; background: #f7f7f7; } app navi ul , [riot-tag="app"] navi ul { list-style: none; padding: .5em; } app navi ul li , [riot-tag="app"] navi ul li { display: inline-block; } app navi ul li:after , [riot-tag="app"] navi ul li:after { content: "-"; margin: 0 1em; } app navi ul li:last-child:after , [riot-tag="app"] navi ul li:last-child:after { content: none; } app navi a , [riot-tag="app"] navi a { } app a , [riot-tag="app"] a { color: #2887D7; text-decoration: none; } app .billboard , [riot-tag="app"] .billboard { background: #ffd700; color: #8A97A1; padding: 2em; } app .billboard > h2 , [riot-tag="app"] .billboard > h2 { margin: 1em .5em .5em; } app .billboard a , [riot-tag="app"] .billboard a { color: inherit; font-weight: bold; }', function (opts) {});
+
 riot.tag('highlight', '<yield></yield>', 'highlight , [riot-tag="highlight"] { display: block; font-family: monospace; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 1em 8% !important; text-align: left; }', function (opts) {
   this.on('mount', function () {
     hljs.highlightBlock(this.root);
   });
+});
+
+riot.tag('my-dialog', '<p>{ opts.message || \'Well...\' }</p> <footer> <button each="{ name, i in opts.btns }" onclick="{ parent.click }">{ name }</button> </footer>', 'my-dialog , [riot-tag="my-dialog"] { display: block; border: 1px solid #a7b5c1; border-radius: .3em; margin: 1em 3em; background: #a7b5c1; color: white; } my-dialog p , [riot-tag="my-dialog"] p { line-height: 1.2em; margin: 0; padding: .8em; font-size: 150%; } my-dialog footer , [riot-tag="my-dialog"] footer { font-size: 90%; color: #a7b5c1; padding: .8em; background: #fff; border-bottom-left-radius: .3em; border-bottom-right-radius: .3em; } my-dialog button , [riot-tag="my-dialog"] button { margin: 0 .2em }', function (opts) {
+  this.mixin('ikki');
+
+  this.click = (function (e) {
+    this.trigger('click', e.item.name);
+  }).bind(this);
 });
 
 riot.tag('my-tag', '<p onclick="{ click }">{ opts.message || \'Well...\' }</p> <footer>{ opts.desc || \'Loading...\' }</footer>', 'my-tag , [riot-tag="my-tag"] { display: block; border: 1px solid #a7b5c1; border-radius: .3em; margin: 1em 3em; background: #a7b5c1; color: white; } my-tag p , [riot-tag="my-tag"] p { line-height: 1.2em; margin: 0; padding: .8em; font-size: 150%; } my-tag footer , [riot-tag="my-tag"] footer { font-size: 90%; color: #a7b5c1; padding: .8em; background: #fff; border-bottom-left-radius: .3em; border-bottom-right-radius: .3em; }', function (opts) {
@@ -175,199 +234,183 @@ riot.tag('my-tag', '<p onclick="{ click }">{ opts.message || \'Well...\' }</p> <
 // quickly yield at first
 // quickly yield at first
 
-},{"./hello.es":2,"regenerator/runtime":4}],2:[function(require,module,exports){
+},{"../lib/deferred.es":2,"../lib/edo.es":3,"../lib/kyoto.es":4,"regenerator/runtime":5}],2:[function(require,module,exports){
+/**
+ * simple deferred implimentation
+ */
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Deferred = (function () {
+  function Deferred() {
+    var _this = this;
+
+    _classCallCheck(this, Deferred);
+
+    this.promise = new Promise(function (resolve, reject) {
+      _this._resolve = resolve;
+      _this._reject = reject;
+    });
+  }
+
+  _createClass(Deferred, [{
+    key: "resolve",
+    value: function resolve(value) {
+      this._resolve(value);
+    }
+  }, {
+    key: "reject",
+    value: function reject(reason) {
+      this._reject(reason);
+    }
+  }]);
+
+  return Deferred;
+})();
+
+exports["default"] = Deferred;
+module.exports = exports["default"];
+
+},{}],3:[function(require,module,exports){
+/**
+ * Edo
+ */
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _deferredEs = require('./deferred.es');
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+var _deferredEs2 = _interopRequireDefault(_deferredEs);
 
-var _libOshioEs = require('../lib/Oshio.es');
+function edo(listenTo, direction) {
+  return regeneratorRuntime.mark(function callee$1$0() {
+    var route = arguments[0] === undefined ? {} : arguments[0];
+    var deferred, g, firstOpts;
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new _deferredEs2['default']();
+          g = direction(route.path || '', route.query || {}, route.param || {});
+          firstOpts = g.next().value;
 
-var _libOshioEs2 = _interopRequireDefault(_libOshioEs);
+          firstOpts.listeners = [{
+            key: listenTo,
+            callback: function callback(arg) {
+              var v = g.next(arg).value;
+              if (!v) return;
+              deferred.resolve(v);
+              deferred = new _deferredEs2['default']();
+            }
+          }];
+          context$2$0.next = 6;
+          return firstOpts;
 
-var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo'];
+        case 6:
+          if (!true) {
+            context$2$0.next = 11;
+            break;
+          }
 
-var Hello = (function (_Oshio) {
-  function Hello() {
-    _classCallCheck(this, Hello);
+          context$2$0.next = 9;
+          return deferred.promise;
 
-    if (_Oshio != null) {
-      _Oshio.apply(this, arguments);
-    }
-  }
+        case 9:
+          context$2$0.next = 6;
+          break;
 
-  _inherits(Hello, _Oshio);
-
-  _createClass(Hello, [{
-    key: 'direction',
-    value: function direction(path, query, param) {
-      var _this = this;
-
-      var name = param.person || 'world';
-      var hello = randomPick(HELLO_I18N);
-
-      var pack = function pack(str) {
-        return {
-          message: hello() + ' ' + str + '!',
-          desc: 'Click to change the word.'
-        };
-      };
-
-      this.on('click', function () {
-        _this.push(pack(name));
-      });
-      this.push(pack(name));
-    }
-  }]);
-
-  return Hello;
-})(_libOshioEs2['default']);
-
-function randomPick(arr) {
-  var n = -1;
-  return function () {
-    n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length;
-    return arr[n];
-  };
+        case 11:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
 }
 
-exports['default'] = Hello;
+exports['default'] = edo;
 module.exports = exports['default'];
 
-},{"../lib/Oshio.es":3}],3:[function(require,module,exports){
+},{"./deferred.es":2}],4:[function(require,module,exports){
 /**
- * Oshio
+ * Kyoto
  */
 
-/*class Deferred {
-
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      this._resolve = resolve
-      this._reject = reject
-    })
-  }
-
-  resolve(value) { this._resolve(value) }
-  reject(reason) { this._reject(reason) }
-
-}*/
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _deferredEs = require('./deferred.es');
 
-function Deferred() {
-  this.promise = new Promise((function (resolve, reject) {
-    this._resolve = resolve;
-    this._reject = reject;
-  }).bind(this));
-}
-Deferred.prototype.resolve = function (value) {
-  this._resolve(value);
-};
-Deferred.prototype.reject = function (reason) {
-  this._reject(reason);
-};
+var _deferredEs2 = _interopRequireDefault(_deferredEs);
 
-var Oshio = (function () {
-  function Oshio() {
-    _classCallCheck(this, Oshio);
+function kyoto(main, listeners) {
+  var deferred;
+  var listenersArr = [];
+  var first = true;
+
+  function push(opts) {
+    if (first) {
+      opts.listeners = listenersArr;
+      first = false;
+    }
+    deferred.resolve(opts);
+    deferred = new _deferredEs2['default']();
   }
 
-  _createClass(Oshio, [{
-    key: 'direction',
-    value: function direction(path, query, param) {}
-  }, {
-    key: 'push',
-    value: function push(value) {
-      this.deferred.resolve(value);
-      this.deferred = new Deferred();
-    }
-  }, {
-    key: 'error',
-    value: function error(reason) {
-      this.deferred.reject(reason);
-      this.deferred = new Deferred();
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      var self = this;
-      return regeneratorRuntime.mark(function callee$2$0() {
-        var route = arguments[0] === undefined ? {} : arguments[0];
-        return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
-          while (1) switch (context$3$0.prev = context$3$0.next) {
-            case 0:
-              self.deferred = new Deferred();
-              setTimeout(function () {
-                self.direction(route.path || '', route.query || {}, route.param || {});
-              }, 10);
+  Object.keys(listeners).map(function (key) {
+    listenersArr.push({ key: key, callback: listeners[key].bind(this, push) });
+  });
 
-            case 2:
-              if (!true) {
-                context$3$0.next = 7;
-                break;
-              }
+  return regeneratorRuntime.mark(function callee$1$0() {
+    var route = arguments[0] === undefined ? {} : arguments[0];
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new _deferredEs2['default']();
+          setTimeout(function () {
+            main(push, route.path || '', route.query || {}, route.param || {});
+            if (first) push({});
+          }, 0);
 
-              context$3$0.next = 5;
-              return self.deferred.promise;
+        case 2:
+          context$2$0.next = 4;
+          return deferred.promise;
 
-            case 5:
-              context$3$0.next = 2;
-              break;
-
-            case 7:
-            case 'end':
-              return context$3$0.stop();
+        case 4:
+          if (true) {
+            context$2$0.next = 2;
+            break;
           }
-        }, callee$2$0, this);
-      });
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      var opts = arguments[0] === undefined ? {} : arguments[0];
 
-      this.push(opts);
-    }
-  }, {
-    key: 'on',
-    value: function on(key, callback) {
-      var _this = this;
+        case 5:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+}
 
-      // TODO: remoeve setTImeout
-      setTimeout(function () {
-        _this.push({
-          listeners: [{ key: key, callback: callback }]
-        });
-      }, 1000);
-    }
-  }]);
+exports['default'] = kyoto;
+module.exports = exports['default'];
 
-  return Oshio;
-})();
-
-exports.Deferred = Deferred;
-exports['default'] = Oshio;
-
-/* extend and override this method */
-
-},{}],4:[function(require,module,exports){
+},{"./deferred.es":2}],5:[function(require,module,exports){
 (function (global){
 /**
  * Copyright (c) 2014, Facebook, Inc.

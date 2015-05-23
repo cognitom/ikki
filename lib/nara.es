@@ -1,30 +1,10 @@
 /**
- * Oshio
+ * Nara
  */
 
-/*class Deferred {
+import Deferred from './deferred.es'
 
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      this._resolve = resolve
-      this._reject = reject
-    })
-  }
-
-  resolve(value) { this._resolve(value) }
-  reject(reason) { this._reject(reason) }
-
-}*/
-function Deferred() {
-  this.promise = new Promise(function(resolve, reject) {
-    this._resolve = resolve
-    this._reject = reject
-  }.bind(this))
-}
-Deferred.prototype.resolve = function(value) { this._resolve(value) }
-Deferred.prototype.reject = function(reason) { this._reject(reason) }
-
-class Oshio {
+class Nara {
 
   direction(path, query, param) {
 
@@ -70,4 +50,4 @@ class Oshio {
 
 }
 
-export { Deferred, Oshio as default }
+export default Nara

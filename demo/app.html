@@ -4,7 +4,7 @@
     <h1>ikki</h1>
     <p>ikki is not flux</p>
   </header>
-
+  
   <section class="billboard">
     <h2>deadly simple &amp; html-centric</h2>
     <p>The extention toolkit for <a href="https://muut.com/riotjs/">Riot.js</a></p>
@@ -12,240 +12,14 @@
     <img src="demo/routing.png">
   </section>
 
-  <h2>pass a promise/generator, just like an object</h2>
-
-  <h3>1. object</h3>
-
-  <p>At the first, see the traditional way to give the value.</p>
-
-  <highlight>
-    &lt;my-tag message="Hi!" /&gt;<br>
-  </highlight>
-
-  <p>Then, see the ikki's way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p>
-
-  <highlight>
-    &lt;my-tag opts=\{ object } /&gt;<br>
-    &lt;script&gt;<br>
-    &nbsp;&nbsp;this.object = \{ message: 'Hi!' }<br>
-    &lt;/script&gt;
-  </highlight>
-
-  <my-tag opts={ obj } />
-
-  <h3>2. promise</h3>
-
-  <p>We can give a promise to the tag. It'll make really easy to do any async process.</p>
-
-  <highlight>
-    &lt;my-tag opts=\{ promise } /&gt;<br>
-    &lt;script&gt;<br>
-    &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \{<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: 'Hello!' })<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br>
-    &nbsp;&nbsp;})<br>
-    &lt;/script&gt;
-  </highlight>
-
-  <my-tag opts={ prom } />
-
-  <h3>3. generator</h3>
-
-  <p>The third stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
-
-  <highlight>
-    &lt;my-tag opts=\{ generator } /&gt;<br>
-    &lt;script&gt;<br>
-    &nbsp;&nbsp;this.generator = function*() \{ while (true) \{<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \{<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: hello())<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;})<br>
-    &nbsp;&nbsp;}}<br>
-    &lt;/script&gt;
-  </highlight>
-
-  <my-tag opts={ gen } />
-
-  <h2>routings in html</h2>
-
-  <p>The routing is needed to be more frexible.<br>
-    Nowaday, routing with the entire page is impractical.<br>
-    You may wanna change just the part of HTML instead of the entire page.<br>
-    Here is what we wanted to do.</p>
-
-  <highlight>
-    &lt;router&gt;<br>
-    &nbsp;&nbsp;&lt;route path="/"&gt;&lt;my-tag message="hello world" /&gt;&lt;/route&gt;<br>
-    &nbsp;&nbsp;&lt;route path="lorem"&gt;&lt;my-tag message="Lorem Ipsum is..." /&gt;&lt;/route&gt;<br>
-    &nbsp;&nbsp;&lt;route path="member/:person"&gt;&lt;my-tag message="$person" /&gt;&lt;/route&gt;<br>
-    &nbsp;&nbsp;&lt;route path="merol" redirect="lorem" /&gt;<br>
-    &nbsp;&nbsp;&lt;route path="*"&gt;&lt;my-tag message="not found." /&gt;&lt;/route&gt;<br>
-    &lt;/router&gt;<br>
-  </highlight>
-
-  <navi>
-    <ul>
-      <li><a href="#lorem">#lorem</a></li>
-      <li><a href="#member/Tom">#member/Tom</a></li>
-      <li><a href="#merol">#merol</a></li>
-      <li><a href="#not/found">#not/found</a></li>
-    </ul>
-  </navi>
-
-  <router>
-    <route path="/"><my-tag message="hello world" desc="slash(/) matchs url without hash" /></route>
-    <route path="lorem"><my-tag message="Lorem Ipsum is simply dummy text of the printing and typesetting industry." desc="'lorem' matchs exact 'lorem'" /></route>
-    <route path="member/:person"><my-tag message="$person" desc="'member/:person' matchs anything starting with 'member/'" /></route>
-    <route path="merol" redirect="lorem" />
-    <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url" /></route>
-  </router>
-
-  <h2>controllers, kind of</h2>
-
-  <h3>1. introduce event listeners</h3>
-
-  <p>Yield an array of listeners like this:</p>
-
-  <highlight>
-    var evts = [\{<br>
-    &nbsp;&nbsp;key: 'click',<br>
-    &nbsp;&nbsp;callback: function (e) \{ /* do something cool */ }<br>
-    }]<br>
-    yield \{ listeners: evts }
-  </highlight>
-
-  <p>If you're familier with deferred concept, you can resolve the promise inside the listener.</p>
-
-  <highlight>
-    var deferred = new Deferred()<br>
-    var evts = [\{<br>
-    &nbsp;&nbsp;key: 'click',<br>
-    &nbsp;&nbsp;callback: function (e) \{ deferred.resolve(\{ message: hello() }) }<br>
-    }]<br>
-    yield \{ listeners: evts }<br>
-    yield deferred.promise
-  </highlight>
-
-  <my-tag opts={ gen2 } />
-
-  <h3>2. combinations</h3>
-
-  <p>OK, we have generators and routers. Then, combine them.</p>
-
-  <navi>
-    <ul>
-      <li><a href="#member/Tom">#member/Tom</a></li>
-      <li><a href="#member/Yayoi">#member/Yayoi</a></li>
-      <li><a href="#member/John">#member/John</a></li>
-    </ul>
-  </navi>
-
-  <router>
-    <route path="member/:person"><my-tag opts={ parent.parent.gen3 } /></route>
-    <route path="*"><my-tag message="not found." desc="Click the links above." /></route>
-  </router>
-
-  <h3>3. making controllers</h3>
-
-  <p>Another example is <a href="https://github.com/cognitom/ikki/blob/dev/demo/hello.es">here</a>.</p>
-
-  <router>
-    <route path="member/:person"><my-tag opts={ parent.parent.gen4 } /></route>
-    <route path="*"><my-tag message="not found." desc="Click the links above." /></route>
-  </router>
+  <section riot-tag="app-section1"></section>
+  <section riot-tag="app-section2"></section>
+  <section riot-tag="app-section3"></section>
+  <section riot-tag="app-section4"></section>
 
   <footer>
     <p><a href="https://github.com/cognitom/ikki">GitHub</a></p>
   </footer>
-
-  <script>
-    var Hello = require('./hello.es')
-
-    // just object
-    this.obj = { message: 'Hi!', desc: 'This is just an object.' }
-
-    // promise
-    this.prom = new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        resolve({ message: 'Hello!', desc: 'You can give a promise.' })
-      }, 10000)
-    })
-
-    // generator
-    this.gen = function*() {
-      var hello = pick(HELLO_I18N)
-      while (true) {
-        yield new Promise(function(resolve, reject) {
-          setTimeout(function() {
-            resolve({ message: hello(), desc: 'Generator is awesome!' })
-          }, 1000)
-        })
-      }
-    }
-
-    // event listeners
-    this.gen2 = function*() {
-      var hello = pick(HELLO_I18N)
-      var resolve = null
-      var deferred = new Deferred()
-
-      function pack() { return {
-        message: hello(),
-        desc: 'Click to change the word.'
-      }}
-
-      var evt = {
-        key: 'click',
-        callback: function(e) {
-          deferred.resolve(pack())
-          deferred = new Deferred()
-        }
-      }
-
-      yield { listeners: [evt] } // listen the event
-      yield pack() // quickly yield at first
-      while (true) yield deferred.promise
-    }
-
-    // generator with router
-    this.gen3 = function*(route) {
-      var name = 'world'
-      var hello = pick(HELLO_I18N)
-
-      if (route && route.param) name = route.param.person || name
-
-      function pack() { return {
-        message: hello() + ' ' + name + '!',
-        desc: 'You can pass the routing info to the generator.'
-      }}
-
-      yield pack() // quickly yield at first
-      while (true) {
-        yield new Promise(function(resolve, reject) {
-          setTimeout(function() { resolve(pack()) }, 1000)
-        })
-      }
-    }
-
-    this.gen4 = new Hello().start()
-
-    var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
-    var pick = function(arr) { var n = -1; return function(){
-      return arr[n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length]
-    }}
-    function Deferred() {
-      this.promise = new Promise(function(resolve, reject) {
-        this._resolve = resolve
-        this._reject = reject
-      }.bind(this))
-    }
-    Deferred.prototype.resolve = function(value) { this._resolve(value) }
-    Deferred.prototype.reject = function(reason) { this._reject(reason) }
-
-  </script>
 
   <style scoped>
     :scope {
@@ -265,15 +39,15 @@
     :scope > header p {
       margin: 0;
     }
-    :scope > p {
+    section > p {
       line-height: 1.4em;
       padding: 0 .5em;
     }
-    :scope > h2 {
+    section > h2 {
       margin: 3em 0 .5em;
       color: #8A97A1;
     }
-    :scope > h3 {
+    section > h3 {
       margin: 3em 0 .5em;
     }
     :scope > footer {
@@ -282,24 +56,21 @@
       padding: 2em 0;
       background: #f7f7f7;
     }
-    :scope > navi {
-
-    }
-    :scope > navi ul {
+    navi ul {
       list-style: none;
       padding: .5em;
     }
-    :scope > navi li {
+    navi ul li {
       display: inline-block;
     }
-    :scope > navi li:after {
+    navi ul li:after {
       content: "-";
       margin: 0 1em;
     }
-    :scope > navi li:last-child:after {
+    navi ul li:last-child:after {
       content: none;
     }
-    :scope > navi a {
+    navi a {
 
     }
     a {
@@ -310,6 +81,9 @@
       background: #ffd700;
       color: #8A97A1;
       padding: 2em;
+    }
+    .billboard > h2 {
+      margin: 1em .5em .5em;
     }
     .billboard a {
       color: inherit;

@@ -1,0 +1,100 @@
+<app-section1>
+
+  <h2>pass a promise/generator, just like an object</h2>
+
+  <h3>1. object</h3>
+
+  <p>At the first, see the traditional way to give the value.</p>
+
+  <highlight>
+    &lt;my-tag message="Hi!" /&gt;<br>
+  </highlight>
+
+  <p>Then, see the ikki's way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p>
+
+  <highlight>
+    &lt;my-tag opts=\{ object } /&gt;<br>
+    &lt;script&gt;<br>
+    &nbsp;&nbsp;this.object = \{ message: 'Hi!' }<br>
+    &lt;/script&gt;
+  </highlight>
+
+  <my-tag opts={ obj } />
+
+  <h3>2. promise</h3>
+
+  <p>We can give a promise to the tag. It'll make really easy to do any async process.</p>
+
+  <highlight>
+    &lt;my-tag opts=\{ promise } /&gt;<br>
+    &lt;script&gt;<br>
+    &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: 'Hello!' })<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br>
+    &nbsp;&nbsp;})<br>
+    &lt;/script&gt;
+  </highlight>
+
+  <my-tag opts={ prom } />
+
+  <h3>3. generator</h3>
+
+  <p>The third stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
+
+  <highlight>
+    &lt;my-tag opts=\{ generator } /&gt;<br>
+    &lt;script&gt;<br>
+    &nbsp;&nbsp;this.generator = function*() \{ while (true) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\{ message: hello())<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;})<br>
+    &nbsp;&nbsp;}}<br>
+    &lt;/script&gt;
+  </highlight>
+
+  <my-tag opts={ gen } />
+
+
+  <script>
+
+    // just object
+    this.obj = { message: 'Hi!', desc: 'This is just an object.' }
+
+    // promise
+    this.prom = new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve({ message: 'Hello!', desc: 'You can give a promise.' })
+      }, 10000)
+    })
+
+    // generator
+    this.gen = function*() {
+      var hello = pick(HELLO_I18N)
+      while (true) {
+        yield new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            resolve({ message: hello(), desc: 'Generator is awesome!' })
+          }, 1000)
+        })
+      }
+    }
+
+    var HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
+    var pick = function(arr) { var n = -1; return function(){
+      return arr[n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length]
+    }}
+    function Deferred() {
+      this.promise = new Promise(function(resolve, reject) {
+        this._resolve = resolve
+        this._reject = reject
+      }.bind(this))
+    }
+    Deferred.prototype.resolve = function(value) { this._resolve(value) }
+    Deferred.prototype.reject = function(reason) { this._reject(reason) }
+
+  </script>
+
+</app-section1>
