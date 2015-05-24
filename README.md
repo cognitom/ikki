@@ -68,6 +68,17 @@ With ikki we can write this:
 </script>
 ```
 
+If you pass the function, the component will get the result of the function.
+
+```html
+<my-tag opts={ func } />
+<script>
+  this.func = (route) => {
+    return { message: "It's "+ now + ".", desc: 'This is a function.' }
+  }
+</script>
+```
+
 Also it's OK to pass the promise.
 
 ```html

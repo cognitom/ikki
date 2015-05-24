@@ -170,6 +170,11 @@ riot.mixin('ikki', {
         else prom.then(setAndGo)
       }
       process(route ? opts(route) : opts())
+    } else if ('function' == typeof opts) {
+
+      // 4. function
+      self.$$extendOpts(opts(route))
+
     }
   },
 

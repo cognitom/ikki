@@ -21,7 +21,22 @@
 
   <my-tag opts={ obj } />
 
-  <h3>2. promise</h3>
+  <h3>2. function</h3>
+
+  <p>If you pass the function, the component will get the result of the function. It's useful when you want to handle the routing information or do something each time.</p>
+
+  <highlight>
+    &lt;my-tag opts=\{ func } /&gt;<br>
+    &lt;script&gt;<br>
+    &nbsp;&nbsp;this.func = function(route) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;return \{ message: "It's " + now + "." }<br>
+    &nbsp;&nbsp;}<br>
+    &lt;/script&gt;
+  </highlight>
+
+  <my-tag opts={ func } />
+
+  <h3>3. promise</h3>
 
   <p>We can give a promise to the tag. It'll make really easy to do any async process.</p>
 
@@ -38,7 +53,7 @@
 
   <my-tag opts={ prom } />
 
-  <h3>3. generator</h3>
+  <h3>4. generator</h3>
 
   <p>The third stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
 
@@ -62,6 +77,15 @@
 
     // just object
     this.obj = { message: 'Hi!', desc: 'This is just an object.' }
+
+    // function
+    this.func = (route) => {
+      let d = new Date()
+      let h = d.getHours()
+      let m = d.getMinutes()
+      let now = h % 12 + (m < 10 ? ':0' : ':') + m + (h < 12 ? 'am' : 'pm')
+      return { message: "It's "+ now + ".", desc: 'This is a function.' }
+    }
 
     // promise
     this.prom = new Promise(function(resolve, reject) {
