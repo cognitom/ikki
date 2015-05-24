@@ -2,7 +2,7 @@
 
   <h2>pass a promise/generator, just like an object</h2>
 
-  <h3>1. object</h3>
+  <h3>1. objects</h3>
 
   <p>At the first, see the traditional way to give the value.</p>
 
@@ -21,7 +21,7 @@
 
   <my-tag opts={ obj } />
 
-  <h3>2. function</h3>
+  <h3>2. functions</h3>
 
   <p>If you pass the function, the component will get the result of the function. It's useful when you want to handle the routing information or do something each time.</p>
 
@@ -36,7 +36,7 @@
 
   <my-tag opts={ func } />
 
-  <h3>3. promise</h3>
+  <h3>3. promises</h3>
 
   <p>We can give a promise to the tag. It'll make really easy to do any async process.</p>
 
@@ -53,9 +53,9 @@
 
   <my-tag opts={ prom } />
 
-  <h3>4. generator</h3>
+  <h3>4. generators</h3>
 
-  <p>The third stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
+  <p>The last stuff is the generator. Think it as serial promises.<br>That's awesome!</p>
 
   <highlight>
     &lt;my-tag opts=\{ generator } /&gt;<br>

@@ -2,10 +2,12 @@
 
   <h2>routings in html</h2>
 
-  <p>The routing is needed to be more frexible.<br>
-    Nowaday, routing with the entire page is impractical.<br>
-    You may wanna change just the part of HTML instead of the entire page.<br>
-    Here is what we wanted to do.</p>
+  <p>Nowaday, routing with the entire page is impractical.<br>
+    The routing is needed to be more frexible.<br>
+    You wanna change just the part of HTML instead of the entire page, doesn't you?<br>
+    Here is what you wanted to do.</p>
+
+  <h3>1. basic routings</h3>
 
   <highlight>
     &lt;router&gt;<br>
@@ -33,5 +35,112 @@
     <route path="merol" redirect="lorem" />
     <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url" /></route>
   </router>
+
+  <h3>2. pass the routing info to functions/generators</h3>
+
+  <p>Of cause, the routing info can be passed to functions/generators via the argument.</p>
+
+  <highlight>
+    &lt;router&gt;<br>
+    &nbsp;&nbsp;&lt;route path="hour/:hour"&gt;&lt;my-tag opts=\{ generator } /&gt;&lt;/route&gt;<br>
+    &lt;/router&gt;<br>
+    &lt;script&gt;<br>
+    &nbsp;&nbsp;this.generator = function*(route) \{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;// route.path: hour/10<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;// route.query: \{}<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;// route.param: \{ hour: 10 }<br>
+    &nbsp;&nbsp;}<br>
+    &lt;/script&gt;
+  </highlight>
+
+  <p>Click the links below to try it.</p>
+
+  <navi>
+    <ol>
+      <li>
+        <a href="#hour/10">#hour/10</a>
+        <span each={ msg, i in greeting.morning }>{ msg }</span>
+      </li>
+      <li>
+        <a href="#hour/14">#hour/14</a>
+        <span each={ msg, i in greeting.hello }>{ msg }</span>
+      </li>
+      <li>
+        <a href="#hour/18">#hour/18</a>
+        <span each={ msg, i in greeting.evening }>{ msg }</span>
+      </li>
+    </ol>
+  </navi>
+
+  <router>
+    <route path="hour/:hour"><my-tag opts={ parent.parent.gen3 } /></route>
+    <route path="*"><my-tag message="Click the links above." desc="..." /></route>
+  </router>
+
+  <script>
+    var Deferred = require('../lib/deferred.es')
+    var GREETING = {
+      morning: ['Good morning', 'おはよう', '早上好', 'Bonjour', 'Buon giorno'],
+      hello: ['Hello', 'こんにちは', '你好', 'Salut', 'Ciao'],
+      evening: ['Good evening', 'こんばんは', '晩上好', 'Bonsoir', 'Buona sera']
+    }
+
+    this.greeting = GREETING
+
+    // generator with router
+    this.gen3 = function*(route) {
+      var hour = route && route.param ? (route.param.hour || 12) % 24 : 12
+      var w = hour < 12 ? 'morning' : hour < 17 ? 'hello' : 'evening'
+      var n = 0
+
+      yield { message: "It's " + hour + " o'clock." } // quickly yield at first
+      while (true) {
+        yield new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            resolve({
+              message: GREETING[w][n],
+              desc: 'You can pass the routing info to the generator.'
+            })
+            n = (n + 1) % GREETING[w].length
+          }, 1500)
+        })
+      }
+    }
+
+  </script>
+
+  <style scoped>
+    navi ol {
+      border: 1px solid #a7b5c1;
+      border-radius: .3em;
+      margin: 1em 3em;
+      padding: 0;
+      color: #a7b5c1;
+    }
+    navi ol li {
+      display: block;
+      border-top: 1px solid #a7b5c1;
+      padding: .2em 0 .2em 1em;
+      text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    navi ol li:first-child {
+      border-top: none;
+    }
+    navi ol li a {
+      margin-right: .2em;
+      padding-right: .4em;
+      border-right: 1px dotted #a7b5c1;
+    }
+    navi ol li span {
+      background-color: #a7b5c1;
+      color: white;
+      border-radius: .3em;
+      padding: .1em .3em;
+      margin: 0 .1em;
+      font-size: 80%;
+    }
+  </style>
 
 </app-section2>

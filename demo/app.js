@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var regeneratorRuntime = require('regenerator/runtime');riot.tag('app-section1', '<h2>pass a promise/generator, just like an object</h2> <h3>1. object</h3> <p>At the first, see the traditional way to give the value.</p> <highlight> &lt;my-tag message="Hi!" /&gt;<br> </highlight> <p>Then, see the ikki\'s way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p> <highlight> &lt;my-tag opts=\\{ object } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.object = \\{ message: \'Hi!\' }<br> &lt;/script&gt; </highlight> <my-tag opts="{ obj }"></my-tag> <h3>2. function</h3> <p>If you pass the function, the component will get the result of the function. It\'s useful when you want to handle the routing information or do something each time.</p> <highlight> &lt;my-tag opts=\\{ func } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.func = function(route) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;return \\{ message: "It\'s " + now + "." }<br> &nbsp;&nbsp;}<br> &lt;/script&gt; </highlight> <my-tag opts="{ func }"></my-tag> <h3>3. promise</h3> <p>We can give a promise to the tag. It\'ll make really easy to do any async process.</p> <highlight> &lt;my-tag opts=\\{ promise } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: \'Hello!\' })<br> &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br> &nbsp;&nbsp;})<br> &lt;/script&gt; </highlight> <my-tag opts="{ prom }"></my-tag> <h3>4. generator</h3> <p>The third stuff is the generator. Think it as serial promises.<br>That\'s awesome!</p> <highlight> &lt;my-tag opts=\\{ generator } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.generator = function*() \\{ while (true) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: hello())<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br> &nbsp;&nbsp;&nbsp;&nbsp;})<br> &nbsp;&nbsp;}}<br> &lt;/script&gt; </highlight> <my-tag opts="{ gen }"></my-tag>', function (opts) {
+var regeneratorRuntime = require('regenerator/runtime');riot.tag('app-section1', '<h2>pass a promise/generator, just like an object</h2> <h3>1. objects</h3> <p>At the first, see the traditional way to give the value.</p> <highlight> &lt;my-tag message="Hi!" /&gt;<br> </highlight> <p>Then, see the ikki\'s way. You can give the data as an object.<br>Great, but boring? OK, go ahead.</p> <highlight> &lt;my-tag opts=\\{ object } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.object = \\{ message: \'Hi!\' }<br> &lt;/script&gt; </highlight> <my-tag opts="{ obj }"></my-tag> <h3>2. functions</h3> <p>If you pass the function, the component will get the result of the function. It\'s useful when you want to handle the routing information or do something each time.</p> <highlight> &lt;my-tag opts=\\{ func } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.func = function(route) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;return \\{ message: "It\'s " + now + "." }<br> &nbsp;&nbsp;}<br> &lt;/script&gt; </highlight> <my-tag opts="{ func }"></my-tag> <h3>3. promises</h3> <p>We can give a promise to the tag. It\'ll make really easy to do any async process.</p> <highlight> &lt;my-tag opts=\\{ promise } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.promise = new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: \'Hello!\' })<br> &nbsp;&nbsp;&nbsp;&nbsp;}, 10000)<br> &nbsp;&nbsp;})<br> &lt;/script&gt; </highlight> <my-tag opts="{ prom }"></my-tag> <h3>4. generators</h3> <p>The last stuff is the generator. Think it as serial promises.<br>That\'s awesome!</p> <highlight> &lt;my-tag opts=\\{ generator } /&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.generator = function*() \\{ while (true) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;yield new Promise(function(resolve, reject) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve(\\{ message: hello())<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, 1000)<br> &nbsp;&nbsp;&nbsp;&nbsp;})<br> &nbsp;&nbsp;}}<br> &lt;/script&gt; </highlight> <my-tag opts="{ gen }"></my-tag>', function (opts) {
   this.obj = { message: 'Hi!', desc: 'This is just an object.' };
 
   this.func = function (route) {
@@ -69,9 +69,7 @@ var regeneratorRuntime = require('regenerator/runtime');riot.tag('app-section1',
   };
 });
 
-riot.tag('app-section2', '<h2>routings in html</h2> <p>The routing is needed to be more frexible.<br> Nowaday, routing with the entire page is impractical.<br> You may wanna change just the part of HTML instead of the entire page.<br> Here is what we wanted to do.</p> <highlight> &lt;router&gt;<br> &nbsp;&nbsp;&lt;route path="/"&gt;&lt;my-tag message="hello world" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="lorem"&gt;&lt;my-tag message="Lorem Ipsum is..." /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="member/:person"&gt;&lt;my-tag message="$person" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="merol" redirect="lorem" /&gt;<br> &nbsp;&nbsp;&lt;route path="*"&gt;&lt;my-tag message="not found." /&gt;&lt;/route&gt;<br> &lt;/router&gt;<br> </highlight> <navi> <ul> <li><a href="#lorem">#lorem</a></li> <li><a href="#member/Tom">#member/Tom</a></li> <li><a href="#merol">#merol</a></li> <li><a href="#not/found">#not/found</a></li> </ul> </navi> <router> <route path="/"><my-tag message="hello world" desc="slash(/) matchs url without hash"></my-tag></route> <route path="lorem"><my-tag message="Lorem Ipsum is simply dummy text of the printing and typesetting industry." desc="\'lorem\' matchs exact \'lorem\'"></my-tag></route> <route path="member/:person"><my-tag message="$person" desc="\'member/:person\' matchs anything starting with \'member/\'"></my-tag></route> <route path="merol" redirect="lorem"></route> <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url"></my-tag></route> </router>', function (opts) {});
-
-riot.tag('app-section3', '<h2>controllers, kind of</h2> <h3>1. introduce event listeners</h3> <p>Yield an array of listeners like this:</p> <highlight> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ /* do something cool */ }<br> }]<br> yield \\{ listeners: evts } </highlight> <p>If you\'re familier with deferred concept, you can resolve the promise inside the listener.</p> <highlight> var deferred = new Deferred()<br> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ deferred.resolve(\\{ message: hello() }) }<br> }]<br> yield \\{ listeners: evts }<br> yield deferred.promise </highlight> <my-dialog opts="{ gen2 }"></my-dialog> <h3>2. combinations</h3> <p>OK, we have generators and routers. Then, combine them.</p> <navi> <ol> <li> <a href="#hour/10">#hour/10</a> <span each="{ msg, i in greeting.morning }">{ msg }</span> </li> <li> <a href="#hour/14">#hour/14</a> <span each="{ msg, i in greeting.hello }">{ msg }</span> </li> <li> <a href="#hour/18">#hour/18</a> <span each="{ msg, i in greeting.evening }">{ msg }</span> </li> </ol> </navi> <router> <route path="hour/:hour"><my-tag opts="{ parent.parent.gen3 }"></my-tag></route> <route path="*"><my-tag message="Click the links above." desc="..."></my-tag></route> </router>', 'app-section3 navi ol , [riot-tag="app-section3"] navi ol { border: 1px solid #a7b5c1; border-radius: .3em; margin: 1em 3em; padding: 0; color: #a7b5c1; } app-section3 navi ol li , [riot-tag="app-section3"] navi ol li { display: block; border-top: 1px solid #a7b5c1; padding: .2em 0 .2em 1em; text-align: left; overflow: hidden; white-space: nowrap; } app-section3 navi ol li:first-child , [riot-tag="app-section3"] navi ol li:first-child { border-top: none; } app-section3 navi ol li a , [riot-tag="app-section3"] navi ol li a { margin-right: .2em; padding-right: .4em; border-right: 1px dotted #a7b5c1; } app-section3 navi ol li span , [riot-tag="app-section3"] navi ol li span { background-color: #a7b5c1; color: white; border-radius: .3em; padding: .1em .3em; margin: 0 .1em; font-size: 80%; }', function (opts) {
+riot.tag('app-section2', '<h2>routings in html</h2> <p>Nowaday, routing with the entire page is impractical.<br> The routing is needed to be more frexible.<br> You wanna change just the part of HTML instead of the entire page, doesn\'t you?<br> Here is what you wanted to do.</p> <h3>1. basic routings</h3> <highlight> &lt;router&gt;<br> &nbsp;&nbsp;&lt;route path="/"&gt;&lt;my-tag message="hello world" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="lorem"&gt;&lt;my-tag message="Lorem Ipsum is..." /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="member/:person"&gt;&lt;my-tag message="$person" /&gt;&lt;/route&gt;<br> &nbsp;&nbsp;&lt;route path="merol" redirect="lorem" /&gt;<br> &nbsp;&nbsp;&lt;route path="*"&gt;&lt;my-tag message="not found." /&gt;&lt;/route&gt;<br> &lt;/router&gt;<br> </highlight> <navi> <ul> <li><a href="#lorem">#lorem</a></li> <li><a href="#member/Tom">#member/Tom</a></li> <li><a href="#merol">#merol</a></li> <li><a href="#not/found">#not/found</a></li> </ul> </navi> <router> <route path="/"><my-tag message="hello world" desc="slash(/) matchs url without hash"></my-tag></route> <route path="lorem"><my-tag message="Lorem Ipsum is simply dummy text of the printing and typesetting industry." desc="\'lorem\' matchs exact \'lorem\'"></my-tag></route> <route path="member/:person"><my-tag message="$person" desc="\'member/:person\' matchs anything starting with \'member/\'"></my-tag></route> <route path="merol" redirect="lorem"></route> <route path="*"><my-tag message="not found." desc="asterisk(*) matchs any url"></my-tag></route> </router> <h3>2. pass the routing info to functions/generators</h3> <p>Of cause, the routing info can be passed to functions/generators via the argument.</p> <highlight> &lt;router&gt;<br> &nbsp;&nbsp;&lt;route path="hour/:hour"&gt;&lt;my-tag opts=\\{ generator } /&gt;&lt;/route&gt;<br> &lt;/router&gt;<br> &lt;script&gt;<br> &nbsp;&nbsp;this.generator = function*(route) \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;// route.path: hour/10<br> &nbsp;&nbsp;&nbsp;&nbsp;// route.query: \\{}<br> &nbsp;&nbsp;&nbsp;&nbsp;// route.param: \\{ hour: 10 }<br> &nbsp;&nbsp;}<br> &lt;/script&gt; </highlight> <p>Click the links below to try it.</p> <navi> <ol> <li> <a href="#hour/10">#hour/10</a> <span each="{ msg, i in greeting.morning }">{ msg }</span> </li> <li> <a href="#hour/14">#hour/14</a> <span each="{ msg, i in greeting.hello }">{ msg }</span> </li> <li> <a href="#hour/18">#hour/18</a> <span each="{ msg, i in greeting.evening }">{ msg }</span> </li> </ol> </navi> <router> <route path="hour/:hour"><my-tag opts="{ parent.parent.gen3 }"></my-tag></route> <route path="*"><my-tag message="Click the links above." desc="..."></my-tag></route> </router>', 'app-section2 navi ol , [riot-tag="app-section2"] navi ol { border: 1px solid #a7b5c1; border-radius: .3em; margin: 1em 3em; padding: 0; color: #a7b5c1; } app-section2 navi ol li , [riot-tag="app-section2"] navi ol li { display: block; border-top: 1px solid #a7b5c1; padding: .2em 0 .2em 1em; text-align: left; overflow: hidden; white-space: nowrap; } app-section2 navi ol li:first-child , [riot-tag="app-section2"] navi ol li:first-child { border-top: none; } app-section2 navi ol li a , [riot-tag="app-section2"] navi ol li a { margin-right: .2em; padding-right: .4em; border-right: 1px dotted #a7b5c1; } app-section2 navi ol li span , [riot-tag="app-section2"] navi ol li span { background-color: #a7b5c1; color: white; border-radius: .3em; padding: .1em .3em; margin: 0 .1em; font-size: 80%; }', function (opts) {
   var Deferred = require('../lib/deferred.es');
   var GREETING = {
     morning: ['Good morning', 'おはよう', '早上好', 'Bonjour', 'Buon giorno'],
@@ -80,48 +78,6 @@ riot.tag('app-section3', '<h2>controllers, kind of</h2> <h3>1. introduce event l
   };
 
   this.greeting = GREETING;
-
-  this.gen2 = regeneratorRuntime.mark(function callee$1$0() {
-    var deferred, n, evt;
-    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
-      while (1) switch (context$2$0.prev = context$2$0.next) {
-        case 0:
-          deferred = new Deferred();
-          n = 0;
-          evt = {
-            key: 'click',
-            callback: function callback(e) {
-              deferred.resolve({ message: GREETING.hello[n] });
-              deferred = new Deferred();
-              n = (n + 1) % GREETING.hello.length;
-            }
-          };
-          context$2$0.next = 5;
-          return { listeners: [evt] };
-
-        case 5:
-          context$2$0.next = 7;
-          return { message: 'Click me!', btns: ['Next'] };
-
-        case 7:
-          if (!true) {
-            context$2$0.next = 12;
-            break;
-          }
-
-          context$2$0.next = 10;
-          return deferred.promise;
-
-        case 10:
-          context$2$0.next = 7;
-          break;
-
-        case 12:
-        case 'end':
-          return context$2$0.stop();
-      }
-    }, callee$1$0, this);
-  });
 
   this.gen3 = regeneratorRuntime.mark(function callee$1$0(route) {
     var hour, w, n;
@@ -163,7 +119,54 @@ riot.tag('app-section3', '<h2>controllers, kind of</h2> <h3>1. introduce event l
   });
 });
 
-riot.tag('app-section4', '<h2>Generator helpers</h3> <p>ikki has several built-in helpers. (named after Japanese historical cities\b)</p> <h3>1. Kyoto</h3> <p><code>Kyoto</code> takes event-driven approach. And you don\'t have to care about the generator which is relatively new in JavaScript.</p> <highlight> var kyoto = require(\'ikki/lib/kyoto.es\')<br> var HELLO = [\'Hello\', \'こんにちは\', \'你好\', \'Salut\', \'Hallo\']<br> <br> this.hello = kyoto(function(push, path, query, param) {<br> &nbsp;&nbsp;push(\\{ message: \'Click me!\', btns: [\'Next\'] })<br> }, {<br> &nbsp;&nbsp;\'click\': (push, data) => \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;push(\\{ message: HELLO[n = ++n % HELLO.length] + \'!\' })<br> &nbsp;&nbsp;}<br> }) </highlight> <my-dialog opts="{ hello }"></my-dialog> <h3>2. Edo</h3> <p>On the other hand, <code>edo</code> is the generator based flow-controler. If you need serial/branching interactions with user\'s input, this will be a perfect solution.</p> <highlight> var edo = require(\'ikki/lib/edo.es\')<br> <br> this.dialog = edo(\'click\', function* direction(path, query, param) \\{<br> &nbsp;&nbsp;yield \\{ message: \'Good morning!\', btns: [\'Hi\'] }<br> &nbsp;&nbsp;let fruit = yield \\{ message: \'Which do you like?\', btns: [\'apple\', \'banana\'] }<br> &nbsp;&nbsp;yield \\{ message: "OK, I\'ll give you this " + fruit + \'.\', btns: [\'Thanks\'] }<br> &nbsp;&nbsp;yield \\{ message: \'See you!\', btns: [\'Bye\'] }<br> }) </highlight> <my-dialog opts="{ dialog }"></my-dialog>', function (opts) {
+riot.tag('app-section3', '<h2>listen to events on components</h2> <p>In short, yield an array of listeners like this:</p> <highlight> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ /* do something cool */ }<br> }]<br> yield \\{ listeners: evts } </highlight> <p>Basically, ikki provide no way to communicate with component and controllers directly, for the sake of separation. But this `listeners` is only an exception.</p> <p>If you\'re familier with deferred concept, you can resolve the promise inside the listener.</p> <highlight> var deferred = new Deferred()<br> var evts = [\\{<br> &nbsp;&nbsp;key: \'click\',<br> &nbsp;&nbsp;callback: function (e) \\{ deferred.resolve(\\{ message: hello() }) }<br> }]<br> yield \\{ listeners: evts }<br> yield deferred.promise </highlight> <my-dialog opts="{ gen2 }"></my-dialog>', function (opts) {
+  var Deferred = require('../lib/deferred.es');
+  var HELLO = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo'];
+
+  this.gen2 = regeneratorRuntime.mark(function callee$1$0() {
+    var deferred, n, evt;
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new Deferred();
+          n = 0;
+          evt = {
+            key: 'click',
+            callback: function callback(e) {
+              deferred.resolve({ message: HELLO[n] });
+              deferred = new Deferred();
+              n = (n + 1) % HELLO.length;
+            }
+          };
+          context$2$0.next = 5;
+          return { listeners: [evt] };
+
+        case 5:
+          context$2$0.next = 7;
+          return { message: 'Click me!', btns: ['Next'] };
+
+        case 7:
+          if (!true) {
+            context$2$0.next = 12;
+            break;
+          }
+
+          context$2$0.next = 10;
+          return deferred.promise;
+
+        case 10:
+          context$2$0.next = 7;
+          break;
+
+        case 12:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+});
+
+riot.tag('app-section4', '<h2>making generators with helpers</h3> <p>ikki has several built-in helpers. (named after Japanese historical cities\b)</p> <p>These helpers wrap generators and event subscriptions to handle them with ease.</p> <h3>1. Kyoto</h3> <p><code>Kyoto</code> takes event-driven approach. And you don\'t have to care about the generator which is relatively new in JavaScript.</p> <highlight> var kyoto = require(\'ikki/lib/kyoto.es\')<br> var HELLO = [\'Hello\', \'こんにちは\', \'你好\', \'Salut\', \'Hallo\']<br> <br> this.hello = kyoto(function(push, path, query, param) {<br> &nbsp;&nbsp;push(\\{ message: \'Click me!\', btns: [\'Next\'] })<br> }, {<br> &nbsp;&nbsp;\'click\': (push, data) => \\{<br> &nbsp;&nbsp;&nbsp;&nbsp;push(\\{ message: HELLO[n = ++n % HELLO.length] + \'!\' })<br> &nbsp;&nbsp;}<br> }) </highlight> <my-dialog opts="{ hello }"></my-dialog> <h3>2. Edo</h3> <p>On the other hand, <code>edo</code> is the generator based flow-controler. If you need serial/branching interactions with user\'s input, this will be a perfect solution.</p> <highlight> var edo = require(\'ikki/lib/edo.es\')<br> <br> this.dialog = edo(\'click\', function* direction(path, query, param) \\{<br> &nbsp;&nbsp;yield \\{ message: \'Good morning!\', btns: [\'Hi\'] }<br> &nbsp;&nbsp;let fruit = yield \\{ message: \'Which do you like?\', btns: [\'apple\', \'banana\'] }<br> &nbsp;&nbsp;yield \\{ message: "OK, I\'ll give you this " + fruit + \'.\', btns: [\'Thanks\'] }<br> &nbsp;&nbsp;yield \\{ message: \'See you!\', btns: [\'Bye\'] }<br> }) </highlight> <my-dialog opts="{ dialog }"></my-dialog>', function (opts) {
   var edo = require('../lib/edo.es');
   var kyoto = require('../lib/kyoto.es');
   var HELLO = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo'];
@@ -238,8 +241,8 @@ riot.tag('my-tag', '<p onclick="{ click }">{ opts.message || \'Well...\' }</p> <
     this.trigger('click', e);
   }).bind(this);
 });
-// listen the event
 // quickly yield at first
+// listen the event
 // quickly yield at first
 
 },{"../lib/deferred.es":2,"../lib/edo.es":3,"../lib/kyoto.es":4,"regenerator/runtime":5}],2:[function(require,module,exports){
