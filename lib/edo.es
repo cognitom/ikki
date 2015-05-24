@@ -2,8 +2,6 @@
  * Edo
  */
 
-import Deferred from './deferred.es'
-
 function edo(listenTo, direction) {
   return function*(route = {}) {
     var deferred = new Deferred()
@@ -22,5 +20,3 @@ function edo(listenTo, direction) {
     while (true) yield deferred.promise
   }
 }
-
-export default edo

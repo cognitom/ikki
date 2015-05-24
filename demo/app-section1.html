@@ -110,14 +110,6 @@
     var pick = function(arr) { var n = -1; return function(){
       return arr[n = (n + Math.ceil(Math.random() * (arr.length - 1))) % arr.length]
     }}
-    function Deferred() {
-      this.promise = new Promise(function(resolve, reject) {
-        this._resolve = resolve
-        this._reject = reject
-      }.bind(this))
-    }
-    Deferred.prototype.resolve = function(value) { this._resolve(value) }
-    Deferred.prototype.reject = function(reason) { this._reject(reason) }
 
   </script>
 

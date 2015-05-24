@@ -2,8 +2,6 @@
  * Kyoto
  */
 
-import Deferred from './deferred.es'
-
 function kyoto(main, listeners) {
   var deferred
   var listenersArr = []
@@ -33,5 +31,3 @@ function kyoto(main, listeners) {
     } while (true)
   }
 }
-
-export default kyoto

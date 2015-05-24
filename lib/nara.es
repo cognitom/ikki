@@ -2,8 +2,6 @@
  * Nara
  */
 
-import Deferred from './deferred.es'
-
 class Nara {
 
   direction(path, query, param) {
@@ -49,5 +47,3 @@ class Nara {
   }
 
 }
-
-export default Nara

@@ -9,4 +9,13 @@ var riot = (!window || !window.riot) ? require('riot') : window.riot;
 
 <%= contents %>
 
+if (typeof exports === 'object') {
+  module.exports = {
+    Deferred: Deferred,
+    edo: edo,
+    kyoto: kyoto,
+    Nara: Nara
+  }
+}
+
 })(typeof window != 'undefined' ? window : undefined)

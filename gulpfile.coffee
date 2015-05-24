@@ -4,6 +4,7 @@ babelify     = require 'babelify'
 through2     = require 'through2'
 
 gulp         = require 'gulp'
+babel        = require 'gulp-babel'
 concat       = require 'gulp-concat'
 riot         = require 'gulp-riot'
 rename       = require 'gulp-rename'
@@ -23,7 +24,8 @@ $ =
   tags:       './components'
   demo:       './demo'
   demoComps:  './demo/*.html'
-  demoSrc:    ['./demo/*.html', './demo/*.es', './lib/*.es']
+  demoSrc:    ['./demo/*.html', './demo/*.es']
+  helperSrc:  ['./lib/*.es']
   riot:       './dist/riot-dev.js'
   riotSrc:    './node_modules/riot/lib/riot.js'
   tagsSrc:    ['./components/*.html']
@@ -55,6 +57,9 @@ gulp.task 'build', ->
     gulp.src $.tagsSrc
     .pipe riot()
     gulp.src $.mixinSrc
+    gulp.src $.helperSrc
+    .pipe concat 'helpers.js'
+    .pipe babel()
   .pipe concat 'ikki.js'
   .pipe wrap src: 'template.txt'
   .pipe gulp.dest $.dist
@@ -67,6 +72,6 @@ gulp.task 'watch', ->
     notify: false
     server: baseDir: './'
   o = debounceDelay: 3000
-  gulp.watch [$.tagsSrc, $.mixinSrc], o, ['build']
+  gulp.watch [$.tagsSrc, $.mixinSrc, $.helperSrc], o, ['build']
   gulp.watch $.demoSrc, o, ['demo']
   gulp.watch $.watch, o, reload

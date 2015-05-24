@@ -15,5 +15,3 @@ class Deferred {
   reject(reason) { this._reject(reason) }
 
 }
-
-export default Deferred

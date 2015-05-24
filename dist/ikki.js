@@ -222,5 +222,233 @@ riot.mixin('parentScope', {
   }
 })
 
+/**
+ * simple deferred implimentation
+ */
+
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Deferred = (function () {
+  function Deferred() {
+    var _this = this;
+
+    _classCallCheck(this, Deferred);
+
+    this.promise = new Promise(function (resolve, reject) {
+      _this._resolve = resolve;
+      _this._reject = reject;
+    });
+  }
+
+  _createClass(Deferred, [{
+    key: 'resolve',
+    value: function resolve(value) {
+      this._resolve(value);
+    }
+  }, {
+    key: 'reject',
+    value: function reject(reason) {
+      this._reject(reason);
+    }
+  }]);
+
+  return Deferred;
+})();
+
+/**
+ * Edo
+ */
+
+function edo(listenTo, direction) {
+  return regeneratorRuntime.mark(function callee$1$0() {
+    var route = arguments[0] === undefined ? {} : arguments[0];
+    var deferred, g, firstOpts;
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new Deferred();
+          g = direction(route.path || '', route.query || {}, route.param || {});
+          firstOpts = g.next().value;
+
+          firstOpts.listeners = [{
+            key: listenTo,
+            callback: function callback(arg) {
+              var v = g.next(arg).value;
+              if (!v) return;
+              deferred.resolve(v);
+              deferred = new Deferred();
+            }
+          }];
+          context$2$0.next = 6;
+          return firstOpts;
+
+        case 6:
+          if (!true) {
+            context$2$0.next = 11;
+            break;
+          }
+
+          context$2$0.next = 9;
+          return deferred.promise;
+
+        case 9:
+          context$2$0.next = 6;
+          break;
+
+        case 11:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+}
+
+/**
+ * Kyoto
+ */
+
+function kyoto(main, listeners) {
+  var deferred;
+  var listenersArr = [];
+  var first = true;
+
+  function push(opts) {
+    if (first) {
+      opts.listeners = listenersArr;
+      first = false;
+    }
+    deferred.resolve(opts);
+    deferred = new Deferred();
+  }
+
+  Object.keys(listeners).map(function (key) {
+    listenersArr.push({ key: key, callback: listeners[key].bind(this, push) });
+  });
+
+  return regeneratorRuntime.mark(function callee$1$0() {
+    var route = arguments[0] === undefined ? {} : arguments[0];
+    return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
+      while (1) switch (context$2$0.prev = context$2$0.next) {
+        case 0:
+          deferred = new Deferred();
+          setTimeout(function () {
+            main(push, route.path || '', route.query || {}, route.param || {});
+            if (first) push({});
+          }, 0);
+
+        case 2:
+          context$2$0.next = 4;
+          return deferred.promise;
+
+        case 4:
+          if (true) {
+            context$2$0.next = 2;
+            break;
+          }
+
+        case 5:
+        case 'end':
+          return context$2$0.stop();
+      }
+    }, callee$1$0, this);
+  });
+}
+
+/**
+ * Nara
+ */
+
+var Nara = (function () {
+  function Nara() {
+    _classCallCheck(this, Nara);
+  }
+
+  _createClass(Nara, [{
+    key: 'direction',
+    value: function direction(path, query, param) {}
+  }, {
+    key: 'push',
+    value: function push(value) {
+      this.deferred.resolve(value);
+      this.deferred = new Deferred();
+    }
+  }, {
+    key: 'error',
+    value: function error(reason) {
+      this.deferred.reject(reason);
+      this.deferred = new Deferred();
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      var self = this;
+      return regeneratorRuntime.mark(function callee$2$0() {
+        var route = arguments[0] === undefined ? {} : arguments[0];
+        return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
+          while (1) switch (context$3$0.prev = context$3$0.next) {
+            case 0:
+              self.deferred = new Deferred();
+              setTimeout(function () {
+                self.direction(route.path || '', route.query || {}, route.param || {});
+              }, 10);
+
+            case 2:
+              if (!true) {
+                context$3$0.next = 7;
+                break;
+              }
+
+              context$3$0.next = 5;
+              return self.deferred.promise;
+
+            case 5:
+              context$3$0.next = 2;
+              break;
+
+            case 7:
+            case 'end':
+              return context$3$0.stop();
+          }
+        }, callee$2$0, this);
+      });
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      var opts = arguments[0] === undefined ? {} : arguments[0];
+
+      this.push(opts);
+    }
+  }, {
+    key: 'on',
+    value: function on(key, callback) {
+      var _this2 = this;
+
+      // TODO: remoeve setTImeout
+      setTimeout(function () {
+        _this2.push({
+          listeners: [{ key: key, callback: callback }]
+        });
+      }, 1000);
+    }
+  }]);
+
+  return Nara;
+})();
+
+/* extend and override this method */
+
+if (typeof exports === 'object') {
+  module.exports = {
+    Deferred: Deferred,
+    edo: edo,
+    kyoto: kyoto,
+    Nara: Nara
+  }
+}
 
 })(typeof window != 'undefined' ? window : undefined)
