@@ -2,6 +2,8 @@ browserify   = require 'browserify'
 riotify      = require 'riotify'
 babelify     = require 'babelify'
 through2     = require 'through2'
+buffer       = require 'vinyl-buffer'
+source       = require 'vinyl-source-stream'
 
 gulp         = require 'gulp'
 babel        = require 'gulp-babel'
@@ -12,6 +14,8 @@ uglify       = require 'gulp-uglify'
 wrap         = require 'gulp-wrap'
 header       = require 'gulp-header'
 shell        = require 'gulp-shell'
+uglify       = require 'gulp-uglify'
+regenerator  = require 'gulp-regenerator'
 streamqueue  = require 'streamqueue'
 runSequence  = require 'run-sequence'
 path         = require 'path'
@@ -23,33 +27,35 @@ $ =
   dist:       './dist'
   tags:       './components'
   demo:       './demo'
-  demoComps:  './demo/*.html'
-  demoSrc:    ['./demo/*.html', './demo/*.es']
-  helperSrc:  ['./lib/*.es']
+  demoTags:   './demo/*.html'
+  demoBabel:  './demo/temp.js'
+  helperSrc:  ['./lib/*.js']
   riot:       './dist/riot-dev.js'
   riotSrc:    './node_modules/riot/lib/riot.js'
   tagsSrc:    ['./components/*.html']
   mixinSrc:   ['./mixins/*.js']
   watch:      ['index.html', 'dist/*', 'demo/app.js']
 
-gulp.task 'default', (cb) -> runSequence 'smash', 'build', 'demo', cb
+gulp.task 'default', (cb) ->
+  runSequence 'smash', 'build', 'demo-riot', 'demo-babel', cb
 
 gulp.task 'smash', shell.task "smash #{ $.riotSrc } > #{ $.riot }"
 
-gulp.task 'demo', ->
-  gulp.src $.demoComps
+gulp.task 'demo-riot', ->
+  gulp.src $.demoTags
   .pipe riot()
-  .pipe concat 'app.es'
-  .pipe header "var regeneratorRuntime = require('regenerator/runtime');"
+  .pipe concat 'temp.js'
   .pipe gulp.dest $.demo
-  .pipe through2.obj (file, enc, next) ->
-    browserify file.path
-    .transform babelify
-    .bundle (err, res) ->
-      return next err if err
-      file.contents = res
-      next null, file
-  .pipe rename 'app.js'
+
+gulp.task 'demo-babel', ->
+  browserify()
+  .transform babelify.configure blacklist: ['regenerator']
+  .add $.demoBabel
+  .bundle()
+  .pipe source 'app.js'
+  .pipe buffer()
+  .pipe regenerator includeRuntime: true
+  #.pipe uglify()
   .pipe gulp.dest $.demo
 
 gulp.task 'build', ->
@@ -73,5 +79,6 @@ gulp.task 'watch', ->
     server: baseDir: './'
   o = debounceDelay: 3000
   gulp.watch [$.tagsSrc, $.mixinSrc, $.helperSrc], o, ['build']
-  gulp.watch $.demoSrc, o, ['demo']
+  gulp.watch [$.demoTags], o, ['demo-riot']
+  gulp.watch [$.demoBabel], o, ['demo-babel']
   gulp.watch $.watch, o, reload

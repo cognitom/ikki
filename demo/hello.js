@@ -1,8 +1,8 @@
-import Oshio from '../lib/Oshio.es'
+import { Nara } from '../'
 
 const HELLO_I18N = ['Hello', 'こんにちは', '你好', 'Salut', 'Hallo']
 
-class Hello extends Oshio {
+class Hello extends Nara {
   direction(path, query, param) {
     let n = -1
 
