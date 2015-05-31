@@ -47,6 +47,22 @@
         self.parent.found = true
       }
     })
+
+    // (grand) parent scope emulation
+    self._ownPropKeys = []
+    self._ownOptsKeys = []
+    for (var k in self) self._ownPropKeys[k] = true
+    for (var k in self.opts) self._ownOptsKeys[k] = true
+
+    self.on('update', function() {
+      var granpa = this.parent.parent
+      if (granpa) {
+        for (var k in granpa)
+          if (!this._ownPropKeys[k]) this[k] = granpa[k]
+        for (var k in granpa.opts)
+          if (!this._ownOptsKeys[k]) this.opts[k] = granpa.opts[k]
+      }
+    })
   </script>
 
 </route>

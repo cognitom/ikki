@@ -181,7 +181,14 @@ This is a simple conversation-like example. `yield` returns the value given by t
 </app>
 ```
 
+## History
 
+- v0.0.1: Ikki mixin and HTML router
+- v0.1.0: Refactoring
+- v0.2.0: Generator helpers
+- v0.2.1: Support normal functions for `opts`
+- v0.2.2: Now we can access helpers via `ikki.edo` or `ikki.kyoto`...etc.
+- v0.2.3: (grand) parent scope emulation
 
 ## License
 
