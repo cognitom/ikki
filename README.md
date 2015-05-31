@@ -29,7 +29,7 @@ $ npm install --save ikki
 
 ```javascript
 var riot = require('riot')
-require('ikki')
+var ikki = require('ikki')
 ```
 
 ### 2) Introduce mixin to your tag
@@ -171,8 +171,7 @@ This is a simple conversation-like example. `yield` returns the value given by t
 <app>
   <my-dialog opts={ gen } />
   <script>
-    var edo = require('ikki/lib/edo')
-    this.gen = edo('click', function*(path, query, param) {
+    this.gen = ikki.edo('click', function*(path, query, param) {
       yield { message: 'Good morning!', btns: ['Next'] }
       let fruit = yield { message: 'Which do you like?', btns: ['apple', 'banana'] }
       yield { message: "OK, I'll give you this " + fruit + '.', btns: ['Thanks'] }
