@@ -43,7 +43,9 @@
         else location.hash = opts.redirect
       } else {
         // tell descendants
-        self.trigger('urlchanged', { path: path, query: query, param: param})
+        var args = { path: path, query: query, param: param};
+        self.trigger('urlchanged', args);
+        this.opts.onactivate && this.opts.onactivate(args);
         self.parent.found = true
       }
     })
