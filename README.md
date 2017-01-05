@@ -1,5 +1,7 @@
 # ikki
 
+[![CDNJS](https://img.shields.io/cdnjs/v/ikki.svg)](https://cdnjs.com/libraries/ikki)
+
 An extention toolkit for [Riot.js](https://muut.com/riotjs/).
 
 ## Features
